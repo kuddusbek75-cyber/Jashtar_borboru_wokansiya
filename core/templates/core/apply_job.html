@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+{% block title %}{% if is_ky %}Жумушка өтүнүү{% else %}Откликнуться на вакансию{% endif %} — {{ job.title }}{% endblock %}
+
+{% block content %}
+<div style="min-height:60vh;display:flex;align-items:center;justify-content:center;padding:40px 16px;">
+    <div style="background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:40px 32px;max-width:520px;width:100%;box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+        <h1 style="font-size:20px;font-weight:700;color:#0B1F3B;margin-bottom:6px;">
+            {% if is_ky %}Жумушка өтүнүү{% else %}Откликнуться на вакансию{% endif %}
+        </h1>
+        <p style="font-size:14px;color:#64748B;margin-bottom:24px;">
+            {{ job.title }} — {{ job.company }}
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div style="margin-bottom:20px;">
+                <label style="display:block;font-size:13px;font-weight:600;color:#0B1F3B;margin-bottom:8px;">
+                    {% if is_ky %}Кошумча кат (милдеттүү эмес){% else %}Сопроводительное письмо (необязательно){% endif %}
+                </label>
+                <textarea
+                    name="cover_letter"
+                    rows="6"
+                    placeholder="{% if is_ky %}Өзүңүз жөнүндө кыскача жазыңыз...{% else %}Расскажите о себе кратко...{% endif %}"
+                    style="width:100%;padding:12px;border:1px solid #E2E8F0;border-radius:8px;font-size:14px;resize:vertical;box-sizing:border-box;outline:none;"
+                ></textarea>
+            </div>
+
+            <button type="submit" style="display:block;width:100%;padding:13px;background:#1E4ED8;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;">
+                {% if is_ky %}Өтүнүч жөнөтүү{% else %}Отправить отклик{% endif %}
+            </button>
+        </form>
+
+        <a href="{% url 'core:job_detail' job.pk %}" style="display:block;text-align:center;margin-top:14px;font-size:13px;color:#64748B;">
+            {% if is_ky %}← Артка кайтуу{% else %}← Назад к вакансии{% endif %}
+        </a>
+    </div>
+</div>
+{% endblock %}

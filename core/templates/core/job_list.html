@@ -1,0 +1,189 @@
+{% extends 'core/base.html' %}
+{% block title %}{% if is_ky %}Жумуштар — Жаштар Борбору{% else %}Вакансии — Жаштар Борбору{% endif %}{% endblock %}
+{% block extra_style %}
+<style>
+.page-header { background: var(--navy); padding: 24px 16px; border-bottom: 2px solid var(--blue); }
+.page-header h1 { font-size: 20px; font-weight: 700; color: var(--white); margin-bottom: 3px; }
+.page-header p { font-size: 12px; color: #94A3B8; }
+
+.search-bar { background: var(--white); border-bottom: 1px solid var(--border); padding: 12px 16px; }
+.search-form { max-width: 1200px; margin: 0 auto; display: flex; gap: 8px; }
+.search-input {
+    flex: 1; padding: 9px 14px; border: 1.5px solid var(--border);
+    border-radius: 7px; font-size: 13px; color: #1E293B; background: var(--bg); outline: none;
+}
+.search-input:focus { border-color: var(--blue); }
+.search-btn {
+    padding: 9px 18px; background: var(--blue); color: var(--white);
+    border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.search-btn:hover { background: #1d44c0; }
+
+.list-layout { max-width: 1200px; margin: 20px auto; padding: 0 16px; display: grid; grid-template-columns: 220px 1fr; gap: 20px; align-items: start; }
+
+.filters { background: var(--white); border: 1px solid var(--border); border-radius: 9px; padding: 16px; position: sticky; top: 70px; }
+.filter-title { font-size: 12px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.filter-group { margin-bottom: 14px; }
+.filter-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 5px; display: block; }
+.filter-select { width: 100%; padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 12px; color: #1E293B; background: var(--bg); outline: none; cursor: pointer; }
+.filter-select:focus { border-color: var(--blue); }
+.filter-reset { display: block; text-align: center; font-size: 12px; color: var(--muted); padding: 7px; border: 1px solid var(--border); border-radius: 6px; transition: all 0.2s; }
+.filter-reset:hover { border-color: #EF4444; color: #EF4444; background: #FEF2F2; }
+
+.results-count { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.results-count strong { color: var(--navy); font-weight: 700; }
+
+.job-row {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 9px; padding: 14px 16px; margin-bottom: 10px;
+    display: block; transition: all 0.2s; position: relative;
+}
+.job-row:hover { border-color: var(--blue); box-shadow: 0 3px 12px rgba(30,78,216,0.08); }
+.job-row.featured { border-left: 3px solid var(--blue); }
+.job-row-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; gap: 10px; }
+.job-row-company { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 2px; }
+.job-row-title { font-size: 15px; font-weight: 600; color: var(--navy); line-height: 1.3; }
+.job-row-salary { font-size: 14px; font-weight: 700; color: var(--green); white-space: nowrap; }
+.job-row-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.job-row-date { font-size: 11px; color: var(--muted); margin-top: 8px; display: block; }
+
+.pagination { display: flex; justify-content: center; gap: 5px; margin-top: 24px; padding-bottom: 16px; flex-wrap: wrap; }
+.page-link { padding: 7px 12px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 13px; font-weight: 500; color: #1E293B; background: var(--white); transition: all 0.2s; display: inline-block; }
+.page-link:hover { border-color: var(--blue); color: var(--blue); }
+.page-link.current { background: var(--blue); border-color: var(--blue); color: var(--white); }
+
+.empty-state { text-align: center; padding: 48px 20px; background: var(--white); border: 1px solid var(--border); border-radius: 9px; }
+.empty-state h3 { font-size: 16px; color: var(--navy); margin-bottom: 6px; }
+.empty-state p { font-size: 13px; color: var(--muted); }
+
+@media (max-width: 768px) {
+    .list-layout { grid-template-columns: 1fr; margin: 12px auto; gap: 12px; }
+    .filters { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .filter-title { display: none; }
+    .filter-group { margin-bottom: 0; }
+    .filter-reset { grid-column: 1 / -1; }
+    .job-row-top { flex-direction: column; gap: 4px; }
+    .job-row-salary { font-size: 13px; }
+}
+@media (min-width: 769px) {
+    .page-header { padding: 28px 24px; }
+    .page-header h1 { font-size: 24px; }
+    .search-bar { padding: 14px 24px; }
+    .search-form { padding: 0; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div style="max-width:1200px;margin:0 auto;">
+        <h1>{% if is_ky %}Бардык жумуштар{% else %}Все вакансии{% endif %}</h1>
+        <p>{% if is_ky %}Жумуш табылды{% else %}Найдено вакансий{% endif %}: {{ total_found }}</p>
+    </div>
+</div>
+
+<div class="search-bar">
+    <form method="GET" action="{% url 'core:job_list' %}" class="search-form">
+        <input type="text" name="q" class="search-input" placeholder="{% if is_ky %}Кызмат орду, компания...{% else %}Должность, компания...{% endif %}" value="{{ search_query }}">
+        {% if current_category %}<input type="hidden" name="category" value="{{ current_category }}">{% endif %}
+        {% if current_employment %}<input type="hidden" name="employment_type" value="{{ current_employment }}">{% endif %}
+        {% if current_experience %}<input type="hidden" name="experience" value="{{ current_experience }}">{% endif %}
+        {% if current_location %}<input type="hidden" name="location" value="{{ current_location }}">{% endif %}
+        <button type="submit" class="search-btn">{% if is_ky %}Издөө{% else %}Найти{% endif %}</button>
+    </form>
+</div>
+
+<div class="list-layout">
+    <aside>
+        <form method="GET" action="{% url 'core:job_list' %}" id="filter-form">
+            {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
+            <div class="filters">
+                <div class="filter-title">{% if is_ky %}Чыпкалар{% else %}Фильтры{% endif %}</div>
+                <div class="filter-group">
+                    <label class="filter-label">{% if is_ky %}Категория{% else %}Категория{% endif %}</label>
+                    <select name="category" class="filter-select" onchange="document.getElementById('filter-form').submit()">
+                        <option value="">{% if is_ky %}Бардык категориялар{% else %}Все категории{% endif %}</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.slug }}" {% if current_category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">{% if is_ky %}Иш түрү{% else %}Занятость{% endif %}</label>
+                    <select name="employment_type" class="filter-select" onchange="document.getElementById('filter-form').submit()">
+                        <option value="">{% if is_ky %}Бардык түрлөр{% else %}Все типы{% endif %}</option>
+                        {% for val, label in employment_choices %}
+                        <option value="{{ val }}" {% if current_employment == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">{% if is_ky %}Иш тажрыйбасы{% else %}Опыт{% endif %}</label>
+                    <select name="experience" class="filter-select" onchange="document.getElementById('filter-form').submit()">
+                        <option value="">{% if is_ky %}Каалаган{% else %}Любой{% endif %}</option>
+                        {% for val, label in experience_choices %}
+                        <option value="{{ val }}" {% if current_experience == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">{% if is_ky %}Шаар{% else %}Город{% endif %}</label>
+                    <select name="location" class="filter-select" onchange="document.getElementById('filter-form').submit()">
+                        <option value="">{% if is_ky %}Бардык шаарлар{% else %}Все города{% endif %}</option>
+                        {% for val, label in city_choices %}
+                        <option value="{{ val }}" {% if current_location == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <a href="{% url 'core:job_list' %}" class="filter-reset">{% if is_ky %}Баштапкыга{% else %}Сбросить{% endif %}</a>
+            </div>
+        </form>
+    </aside>
+
+    <div>
+        <div class="results-count">{% if is_ky %}Жумуш табылды{% else %}Найдено{% endif %}: <strong>{{ total_found }}</strong></div>
+
+        {% for job in page_obj %}
+        <a href="{% url 'core:job_detail' job.pk %}" class="job-row {% if job.is_featured %}featured{% endif %}">
+            <div class="job-row-top">
+                <div>
+                    <div class="job-row-company">{{ job.company }}</div>
+                    <div class="job-row-title">{{ job.title }}</div>
+                </div>
+                <div class="job-row-salary">{{ job.get_salary_display }}</div>
+            </div>
+            <div class="job-row-meta">
+                <span class="badge badge-blue">{{ job.get_employment_type_display }}</span>
+                <span class="badge badge-gray">{{ job.location }}</span>
+                <span class="badge badge-gray">{{ job.get_experience_display }}</span>
+                {% if job.category %}<span class="badge badge-green">{{ job.category.name }}</span>{% endif %}
+            </div>
+            <span class="job-row-date">{% if is_ky %}Жарыяланган{% else %}Опубликовано{% endif %}: {{ job.created_at|date:"d.m.Y" }}</span>
+        </a>
+        {% empty %}
+        <div class="empty-state">
+            <h3>{% if is_ky %}Жумуштар табылган жок{% else %}Вакансии не найдены{% endif %}</h3>
+            <p>{% if is_ky %}Издөө параметрлерин өзгөртүп көрүңүз{% else %}Попробуйте изменить параметры поиска{% endif %}</p>
+        </div>
+        {% endfor %}
+
+        {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&q={{ search_query }}&category={{ current_category }}&employment_type={{ current_employment }}&experience={{ current_experience }}&location={{ current_location }}" class="page-link">{% if is_ky %}← Артка{% else %}← Назад{% endif %}</a>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <span class="page-link current">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a href="?page={{ num }}&q={{ search_query }}&category={{ current_category }}&employment_type={{ current_employment }}&experience={{ current_experience }}&location={{ current_location }}" class="page-link">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&q={{ search_query }}&category={{ current_category }}&employment_type={{ current_employment }}&experience={{ current_experience }}&location={{ current_location }}" class="page-link">{% if is_ky %}Алдыга →{% else %}Вперёд →{% endif %}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

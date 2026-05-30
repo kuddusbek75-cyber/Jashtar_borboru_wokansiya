@@ -1,0 +1,186 @@
+{% extends 'core/base.html' %}
+{% block title %}{{ job.title }} — {{ job.company }} | Жаштар Борбору{% endblock %}
+{% block meta_description %}{{ job.description|truncatechars:160 }}{% endblock %}
+{% block meta_keywords %}{{ job.title }}, {{ job.company }}, работа {{ job.location }}, вакансия Кыргызстан{% endblock %}
+{% block extra_style %}
+<style>
+.detail-header { background: var(--navy); padding: 40px 0; border-bottom: 3px solid var(--blue); }
+.detail-header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; font-size: 13px; }
+.breadcrumb a { color: #94A3B8; }
+.breadcrumb a:hover { color: #fff; }
+.breadcrumb span { color: #475569; }
+.detail-company { font-size: 13px; color: #94A3B8; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.detail-title { font-size: 32px; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 16px; }
+.detail-badges { display: flex; flex-wrap: wrap; gap: 8px; }
+.detail-layout { max-width: 1200px; margin: 32px auto; padding: 0 24px; display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; }
+.content-block { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 28px; margin-bottom: 16px; }
+.content-block-title { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.content-block-title::before { content: ''; display: inline-block; width: 4px; height: 18px; background: var(--blue); border-radius: 2px; }
+.content-text { font-size: 14px; line-height: 1.8; color: #374151; white-space: pre-line; }
+.sidebar-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 22px; margin-bottom: 16px; position: sticky; top: 84px; }
+.sidebar-title { font-size: 13px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.info-row { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.info-item { display: flex; flex-direction: column; gap: 2px; }
+.info-item-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+.info-item-value { font-size: 14px; font-weight: 600; color: var(--navy); }
+.info-item-value.salary { color: var(--green); font-size: 16px; }
+.apply-btn { display: block; width: 100%; text-align: center; padding: 13px; background: var(--blue); color: var(--white); border-radius: 8px; font-size: 15px; font-weight: 600; transition: background 0.2s; margin-bottom: 10px; }
+.apply-btn:hover { background: #1d44c0; }
+.apply-btn-done { display: block; width: 100%; text-align: center; padding: 13px; background: #10B981; color: #fff; border-radius: 8px; font-size: 15px; font-weight: 600; margin-bottom: 10px; cursor: default; }
+.contact-btn { display: block; width: 100%; text-align: center; padding: 11px; background: transparent; color: var(--blue); border: 1.5px solid var(--blue); border-radius: 8px; font-size: 14px; font-weight: 600; transition: all 0.2s; }
+.contact-btn:hover { background: var(--blue); color: var(--white); }
+.related-section { max-width: 1200px; margin: 0 auto 48px; padding: 0 24px; }
+.related-title { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 16px; }
+.related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.related-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; display: block; transition: all 0.2s; }
+.related-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+.related-card-company { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; margin-bottom: 4px; }
+.related-card-title { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 8px; line-height: 1.3; }
+.related-card-salary { font-size: 13px; font-weight: 700; color: var(--green); }
+@media (max-width: 768px) {
+    .detail-header { padding: 24px 0; }
+    .detail-header-inner { padding: 0 16px; }
+    .detail-title { font-size: 22px; }
+    .detail-layout { grid-template-columns: 1fr; padding: 0 12px; margin: 16px auto; }
+    .sidebar-card { position: static; }
+    .content-block { padding: 16px; }
+    .related-section { padding: 0 12px; }
+    .related-grid { grid-template-columns: repeat(2, 1fr); }
+    .related-card:hover { transform: none; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-header">
+    <div class="detail-header-inner">
+        <div class="breadcrumb">
+            <a href="{% url 'core:home' %}">{% if is_ky %}Башкы бет{% else %}Главная{% endif %}</a>
+            <span>/</span>
+            <a href="{% url 'core:job_list' %}">{% if is_ky %}Жумуштар{% else %}Вакансии{% endif %}</a>
+            <span>/</span>
+            <span style="color:#94A3B8;">{{ job.title }}</span>
+        </div>
+        <div class="detail-company">{{ job.company }}</div>
+        <h1 class="detail-title">{{ job.title }}</h1>
+        <div class="detail-badges">
+            <span class="badge badge-blue">{{ job.get_employment_type_display }}</span>
+            <span class="badge badge-gray">📍 {{ job.location }}</span>
+            <span class="badge badge-gray">{{ job.get_experience_display }}</span>
+            {% if job.category %}<span class="badge badge-green">{{ job.category.name }}</span>{% endif %}
+            {% if job.is_featured %}<span class="badge badge-green">⭐ {% if is_ky %}Сунушталган{% else %}Рекомендуемая{% endif %}</span>{% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="detail-layout">
+    <div>
+        <div class="content-block">
+            <div class="content-block-title">{% if is_ky %}Жумуш жарыясынын сүрөттөмөсү{% else %}Описание вакансии{% endif %}</div>
+            <div class="content-text">{{ job.description }}</div>
+        </div>
+        {% if job.responsibilities %}
+        <div class="content-block">
+            <div class="content-block-title">{% if is_ky %}Милдеттер{% else %}Обязанности{% endif %}</div>
+            <div class="content-text">{{ job.responsibilities }}</div>
+        </div>
+        {% endif %}
+        {% if job.requirements %}
+        <div class="content-block">
+            <div class="content-block-title">{% if is_ky %}Талаптар{% else %}Требования{% endif %}</div>
+            <div class="content-text">{{ job.requirements }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <aside>
+        <div class="sidebar-card">
+            <div class="sidebar-title">{% if is_ky %}Иш шарттары{% else %}Условия работы{% endif %}</div>
+            <div class="info-row">
+                <div class="info-item">
+                    <span class="info-item-label">{% if is_ky %}Айлык акы{% else %}Зарплата{% endif %}</span>
+                    <span class="info-item-value salary">{{ job.get_salary_display }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-item-label">{% if is_ky %}Иш түрү{% else %}Тип занятости{% endif %}</span>
+                    <span class="info-item-value">{{ job.get_employment_type_display }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-item-label">{% if is_ky %}Иш тажрыйбасы{% else %}Опыт работы{% endif %}</span>
+                    <span class="info-item-value">{{ job.get_experience_display }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-item-label">{% if is_ky %}Шаар{% else %}Город{% endif %}</span>
+                    <span class="info-item-value">{{ job.location }}</span>
+                </div>
+                {% if job.category %}
+                <div class="info-item">
+                    <span class="info-item-label">{% if is_ky %}Категория{% else %}Категория{% endif %}</span>
+                    <span class="info-item-value">{{ job.category.name }}</span>
+                </div>
+                {% endif %}
+                <div class="info-item">
+                    <span class="info-item-label">{% if is_ky %}Жарыяланган{% else %}Дата публикации{% endif %}</span>
+                    <span class="info-item-value">{{ job.created_at|date:"d.m.Y" }}</span>
+                </div>
+            </div>
+
+            {% if user.is_authenticated %}
+                {% if already_applied %}
+                    <div class="apply-btn-done">✓ {% if is_ky %}Өтүнүч жөнөтүлдү{% else %}Отклик отправлен{% endif %}</div>
+                {% else %}
+                    <a href="{% url 'core:apply_job' job.pk %}" class="apply-btn">{% if is_ky %}Жумушка өтүнүү{% else %}Откликнуться на вакансию{% endif %}</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'core:login' %}?next={{ request.path }}" class="apply-btn">{% if is_ky %}Жумушка өтүнүү{% else %}Откликнуться на вакансию{% endif %}</a>
+            {% endif %}
+
+            {% if job.contact_phone %}
+            <a href="tel:{{ job.contact_phone }}" class="contact-btn">📞 {{ job.contact_phone }}</a>
+            {% endif %}
+        </div>
+
+        <div class="sidebar-card">
+            <div class="sidebar-title">{% if is_ky %}Байланыш{% else %}Контакты{% endif %}</div>
+            <div class="info-row">
+                <div class="info-item">
+                    <span class="info-item-label">{% if is_ky %}Уюм{% else %}Организация{% endif %}</span>
+                    <span class="info-item-value">{{ job.company }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-item-label">Email</span>
+                    <span class="info-item-value" style="font-size:13px;">
+                        <a href="mailto:{{ job.contact_email }}" style="color:var(--blue);">{{ job.contact_email }}</a>
+                    </span>
+                </div>
+                {% if job.contact_phone %}
+                <div class="info-item">
+                    <span class="info-item-label">{% if is_ky %}Телефон{% else %}Телефон{% endif %}</span>
+                    <span class="info-item-value">{{ job.contact_phone }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <a href="{% url 'core:job_list' %}" style="display:block;text-align:center;font-size:13px;color:var(--muted);padding:10px;">
+            {% if is_ky %}← Тизмеге кайтуу{% else %}← Вернуться к списку{% endif %}
+        </a>
+    </aside>
+</div>
+
+{% if related_jobs %}
+<div class="related-section">
+    <div class="related-title">{% if is_ky %}Окшош жумуштар{% else %}Похожие вакансии{% endif %}</div>
+    <div class="related-grid">
+        {% for rjob in related_jobs %}
+        <a href="{% url 'core:job_detail' rjob.pk %}" class="related-card">
+            <div class="related-card-company">{{ rjob.company }}</div>
+            <div class="related-card-title">{{ rjob.title }}</div>
+            <div class="related-card-salary">{{ rjob.get_salary_display }}</div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

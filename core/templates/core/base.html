@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Жаштар Борбору{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Портал вакансий для молодёжи Кыргызстана{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}вакансии Бишкек, работа Кыргызстан{% endblock %}">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --navy: #0B1F3B;
+            --blue: #1E4ED8;
+            --green: #16A34A;
+            --muted: #64748B;
+            --border: #E2E8F0;
+            --white: #FFFFFF;
+            --bg: #F8FAFC;
+        }
+        html, body { overflow-x: hidden; width: 100%; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #1E293B; font-size: 14px; line-height: 1.5; }
+        a { text-decoration: none; color: inherit; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+        .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
+        .badge-blue  { background: #EFF6FF; color: var(--blue); }
+        .badge-gray  { background: #F1F5F9; color: var(--muted); }
+        .badge-green { background: #F0FDF4; color: var(--green); }
+
+        /* NAV */
+        nav { background: var(--navy); border-bottom: 2px solid var(--blue); position: sticky; top: 0; z-index: 100; }
+        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; height: 54px; }
+
+        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .nav-logo-img { height: 38px; width: 38px; object-fit: contain; border-radius: 50%; flex-shrink: 0; }
+        .nav-logo-text { font-size: 15px; font-weight: 700; color: #fff; white-space: nowrap; }
+        .nav-logo-text span { color: #60A5FA; }
+
+        .nav-links { display: flex; gap: 4px; align-items: center; }
+        .nav-links a { color: #CBD5E1; font-size: 13px; font-weight: 500; padding: 6px 10px; border-radius: 5px; transition: background 0.2s; }
+        .nav-links a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        .btn-nav { background: var(--blue) !important; color: #fff !important; }
+        .btn-nav:hover { background: #1d44c0 !important; }
+        .btn-nav-outline { border: 1px solid rgba(255,255,255,0.3) !important; color: #fff !important; }
+        .nav-avatar { width: 28px; height: 28px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
+        .nav-username { color: #CBD5E1; font-size: 12px; }
+        .logout-form { display: inline; }
+        .logout-btn { background: none; border: 1px solid rgba(255,255,255,0.25); color: #CBD5E1; border-radius: 5px; font-size: 12px; font-weight: 500; padding: 5px 10px; cursor: pointer; font-family: inherit; }
+        .logout-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+        /* Переключатель языка — ПК */
+        .lang-switcher { display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; overflow: hidden; margin-left: 6px; }
+        .lang-switcher a { padding: 4px 10px; font-size: 12px; font-weight: 700; color: #CBD5E1; transition: background 0.2s; }
+        .lang-switcher a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        .lang-switcher a.active { background: var(--blue); color: #fff; }
+
+        .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; background: none; border: none; }
+        .burger span { display: block; width: 22px; height: 2px; background: #CBD5E1; border-radius: 2px; }
+
+        .mobile-menu { display: none; background: var(--navy); border-top: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; flex-direction: column; gap: 6px; }
+        .mobile-menu.open { display: flex; }
+        .mobile-menu a { color: #CBD5E1; font-size: 14px; font-weight: 500; padding: 10px 14px; border-radius: 7px; transition: background 0.2s; display: block; }
+        .mobile-menu a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        .mobile-menu .btn-nav { background: var(--blue) !important; color: #fff !important; text-align: center; }
+        .mobile-menu .btn-nav-outline { border: 1px solid rgba(255,255,255,0.3) !important; color: #fff !important; text-align: center; }
+        .mobile-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0; }
+        .mobile-user-info { display: flex; align-items: center; gap: 10px; padding: 10px 14px; }
+        .mobile-avatar { width: 32px; height: 32px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
+        .mobile-username { color: #fff; font-size: 14px; font-weight: 600; }
+        .mobile-logout-btn { width: 100%; padding: 10px 14px; background: none; border: 1px solid rgba(255,255,255,0.2); color: #CBD5E1; border-radius: 7px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; text-align: center; }
+        .mobile-logout-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+        /* Переключатель языка — мобилка */
+        .mobile-lang-switcher { display: flex; gap: 8px; padding: 4px 14px; }
+        .mobile-lang-switcher a { flex: 1; text-align: center; padding: 9px; border-radius: 7px; font-size: 14px; font-weight: 700; color: #CBD5E1; border: 1px solid rgba(255,255,255,0.2); transition: background 0.2s; }
+        .mobile-lang-switcher a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        .mobile-lang-switcher a.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+        .messages-wrap { max-width: 1200px; margin: 10px auto; padding: 0 16px; }
+        .msg { padding: 10px 14px; border-radius: 7px; margin-bottom: 6px; font-size: 13px; font-weight: 500; }
+        .msg-success { background: #F0FDF4; color: #166534; border: 1px solid #BBF7D0; }
+        .msg-error   { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
+        .msg-info    { background: #EFF6FF; color: #1E40AF; border: 1px solid #BFDBFE; }
+
+        footer { background: var(--navy); color: #64748B; padding: 24px 16px; text-align: center; font-size: 12px; margin-top: 48px; border-top: 2px solid var(--blue); }
+        footer a { color: #60A5FA; }
+        .footer-links-row { display: flex; justify-content: center; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
+
+        @media (max-width: 640px) {
+            .nav-links { display: none; }
+            .burger { display: flex; }
+        }
+    </style>
+    {% block extra_style %}{% endblock %}
+</head>
+<body>
+<nav>
+    <div class="nav-inner">
+        <a href="{% url 'core:home' %}" class="nav-logo">
+            <img src="{% static 'images/logo.png' %}" alt="Лого" class="nav-logo-img">
+            <span class="nav-logo-text">Жаштар <span>Борбору</span></span>
+        </a>
+        <div class="nav-links">
+            <a href="{% url 'core:job_list' %}">Вакансии</a>
+            <a href="{% url 'core:post_job' %}" class="btn-nav">+ Вакансия</a>
+            {% if user.is_authenticated %}
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <div class="nav-avatar">{{ user.username|first|upper }}</div>
+                    <a href="{% url 'core:profile' %}" class="nav-username">{{ user.username }}</a>
+                </div>
+                <form method="POST" action="{% url 'core:logout' %}" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">Выйти</button>
+                </form>
+            {% else %}
+                <a href="{% url 'core:register' %}" class="btn-nav-outline" style="padding:5px 10px;">Регистрация</a>
+                <a href="{% url 'core:login' %}" style="padding:5px 10px;color:#CBD5E1;">Войти</a>
+            {% endif %}
+            <div class="lang-switcher">
+                <a href="{% url 'core:set_lang' %}?lang=ru" {% if LANG == 'ru' %}class="active"{% endif %}>RU</a>
+                <a href="{% url 'core:set_lang' %}?lang=ky" {% if LANG == 'ky' %}class="active"{% endif %}>КЫ</a>
+            </div>
+        </div>
+        <button class="burger" id="burgerBtn" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+        {% if user.is_authenticated %}
+            <div class="mobile-user-info">
+                <div class="mobile-avatar">{{ user.username|first|upper }}</div>
+                <div class="mobile-username">{{ user.username }}</div>
+            </div>
+            <div class="mobile-divider"></div>
+            <a href="{% url 'core:job_list' %}">Вакансии</a>
+            <a href="{% url 'core:post_job' %}" class="btn-nav">+ Разместить вакансию</a>
+            <a href="{% url 'core:profile' %}">Мой профиль</a>
+            <div class="mobile-divider"></div>
+            <form method="POST" action="{% url 'core:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="mobile-logout-btn">Выйти</button>
+            </form>
+        {% else %}
+            <a href="{% url 'core:job_list' %}">Вакансии</a>
+            <a href="{% url 'core:post_job' %}" class="btn-nav">+ Разместить вакансию</a>
+            <div class="mobile-divider"></div>
+            <a href="{% url 'core:register' %}" class="btn-nav-outline">Регистрация</a>
+            <a href="{% url 'core:login' %}">Войти</a>
+        {% endif %}
+        <div class="mobile-divider"></div>
+        <div class="mobile-lang-switcher">
+            <a href="{% url 'core:set_lang' %}?lang=ru" {% if LANG == 'ru' %}class="active"{% endif %}>RU</a>
+            <a href="{% url 'core:set_lang' %}?lang=ky" {% if LANG == 'ky' %}class="active"{% endif %}>КЫ</a>
+        </div>
+    </div>
+</nav>
+
+{% if messages %}
+<div class="messages-wrap">
+    {% for message in messages %}
+    <div class="msg {% if message.tags == 'error' %}msg-error{% elif message.tags == 'success' %}msg-success{% else %}msg-info{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<footer>
+    <p>© 2026 Жаштар Борбору — Портал вакансий Кыргызской Республики</p>
+    <div class="footer-links-row">
+        <a href="{% url 'core:job_list' %}">Вакансии</a>
+        <a href="{% url 'core:post_job' %}">Разместить вакансию</a>
+        <a href="/admin/">Админ</a>
+    </div>
+</footer>
+
+<script>
+    function toggleMenu() {
+        document.getElementById('mobileMenu').classList.toggle('open');
+    }
+    document.addEventListener('click', function(e) {
+        const menu = document.getElementById('mobileMenu');
+        const burger = document.getElementById('burgerBtn');
+        if (!menu.contains(e.target) && !burger.contains(e.target)) {
+            menu.classList.remove('open');
+        }
+    });
+</script>
+</body>
+</html>

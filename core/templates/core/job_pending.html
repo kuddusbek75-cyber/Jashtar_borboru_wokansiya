@@ -1,0 +1,31 @@
+{% extends 'core/base.html' %}
+{% block title %}{% if is_ky %}Жумуш жарыясы текшерүүдө — Жаштар Борбору{% else %}Вакансия на проверке — Жаштар Борбору{% endif %}{% endblock %}
+
+{% block content %}
+<div style="min-height:60vh;display:flex;align-items:center;justify-content:center;padding:40px 16px;">
+    <div style="background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:40px 32px;max-width:480px;width:100%;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+        <div style="font-size:56px;margin-bottom:16px;">⏳</div>
+        <h1 style="font-size:22px;font-weight:700;color:#0B1F3B;margin-bottom:10px;">
+            {% if is_ky %}Жумуш жарыясы текшерүүгө жөнөтүлдү!{% else %}Вакансия отправлена на проверку!{% endif %}
+        </h1>
+        <p style="font-size:14px;color:#64748B;line-height:1.7;margin-bottom:24px;">
+            {% if is_ky %}
+                Жумуш жарыяңыз кабыл алынды жана азыр модерациядан өтүп жатат.<br>
+                Жактырылгандан кийин email аркылуу кабарлама аласыз жана жарыя сайтта пайда болот.
+            {% else %}
+                Ваша вакансия получена и сейчас проходит модерацию.<br>
+                После одобрения вы получите уведомление на email и вакансия появится на сайте.
+            {% endif %}
+        </p>
+        <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:14px;margin-bottom:24px;font-size:13px;color:#166534;">
+            ✅ {% if is_ky %}Текшерүү адатта 24 саатка чейин созулат{% else %}Обычно проверка занимает до 24 часов{% endif %}
+        </div>
+        <a href="{% url 'core:job_list' %}" style="display:inline-block;padding:11px 24px;background:#1E4ED8;color:#fff;border-radius:7px;font-size:14px;font-weight:600;">
+            {% if is_ky %}Башка жумуштарды көрүү{% else %}Смотреть другие вакансии{% endif %}
+        </a>
+        <a href="{% url 'core:profile' %}" style="display:block;margin-top:12px;font-size:13px;color:#64748B;">
+            {% if is_ky %}Профилге өтүү →{% else %}Перейти в профиль →{% endif %}
+        </a>
+    </div>
+</div>
+{% endblock %}
