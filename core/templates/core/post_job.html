@@ -1,25 +1,26 @@
 ﻿{% extends 'core/base.html' %}
-{% block title %}{% if is_ky %}Жумуш жарыялоо — Жаштар Борбору{% else %}Разместить вакансию — Жаштар Борбору{% endif %}{% endblock %}
+{% block title %}{% if is_ky %}Жумуш жарыялоо — Nexbit{% else %}Разместить вакансию — Nexbit{% endif %}{% endblock %}
 {% block extra_style %}
 <style>
-.post-header { background: var(--navy); padding: 20px 16px; border-bottom: 2px solid var(--blue); }
-.post-header h1 { font-size: 20px; font-weight: 700; color: #fff; }
-.post-header p { font-size: 12px; color: #94A3B8; margin-top: 4px; }
+.post-header { background: var(--dark); padding: 20px 16px; border-bottom: 2px solid var(--red); }
+.post-header h1 { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+.post-header p { font-size: 12px; color: var(--muted); margin-top: 4px; }
 .post-layout { max-width: 800px; margin: 16px auto 48px; padding: 0 16px; }
-.form-card { background: var(--white); border: 1px solid var(--border); border-radius: 9px; padding: 16px; margin-bottom: 14px; }
-.form-card-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+.form-card { background: var(--dark2); border: 1px solid var(--border); border-radius: 9px; padding: 16px; margin-bottom: 14px; }
+.form-card-title { font-size: 14px; font-weight: 700; color: #E8EAF0; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
 .form-group { margin-bottom: 13px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.form-label { display: block; font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 5px; }
-.form-label span { color: #DC2626; }
-.form-input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 13px; font-family: "Segoe UI", sans-serif; color: #1E293B; background: var(--bg); outline: none; }
-.form-input:focus { border-color: var(--blue); background: var(--white); }
+.form-label { display: block; font-size: 12px; font-weight: 600; color: #C8CDD8; margin-bottom: 5px; }
+.form-label span { color: var(--red); }
+.form-input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 13px; font-family: inherit; color: var(--text); background: var(--bg); outline: none; }
+.form-input:focus { border-color: var(--red); background: var(--dark2); }
 select.form-input { cursor: pointer; }
 textarea.form-input { resize: vertical; min-height: 100px; }
-.form-error { font-size: 11px; color: #DC2626; margin-top: 3px; }
-.submit-btn { width: 100%; padding: 13px; background: var(--blue); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: "Segoe UI", sans-serif; transition: background 0.2s; }
-.submit-btn:hover { background: #1d44c0; }
-.notice-box { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 12px 16px; margin-bottom: 14px; font-size: 13px; color: #1E40AF; }
+.form-error { font-size: 11px; color: #F87171; margin-top: 3px; }
+.submit-btn { width: 100%; padding: 13px; background: var(--red); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+.submit-btn:hover { background: var(--red-dark); }
+.notice-box { background: rgba(245,166,35,0.08); border: 1px solid rgba(245,166,35,0.25); border-radius: 8px; padding: 12px 16px; margin-bottom: 14px; font-size: 13px; color: var(--gold); }
+.notice-box.error { background: rgba(212,43,43,0.08); border-color: rgba(212,43,43,0.25); color: #F87171; }
 @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
 @media (min-width: 768px) {
     .post-header { padding: 28px 24px; }
@@ -34,22 +35,20 @@ textarea.form-input { resize: vertical; min-height: 100px; }
 <div class="post-header">
     <div style="max-width:800px;margin:0 auto;">
         <h1>{% if is_ky %}Жумуш жарыялоо{% else %}Разместить вакансию{% endif %}</h1>
-        <p>{% if is_ky %}Жумуш жарыясы администратор текшергенден кийин порталда жайгашат{% else %}Вакансия появится на портале после проверки администратором{% endif %}</p>
+        <p>{% if is_ky %}Жарыя администратор текшергенден кийин жайгашат{% else %}Вакансия появится после проверки администратором{% endif %}</p>
     </div>
 </div>
 
 <div class="post-layout">
     {% if not user.is_authenticated %}
     <div class="notice-box">
-        {% if is_ky %}Форманы толтуруп, баскычты басыңыз — биз сизден катталууну суранабыз, маалыматтар жоголбойт.{% else %}Заполните форму и нажмите кнопку — мы попросим вас зарегистрироваться, данные не потеряются.{% endif %}
+        {% if is_ky %}Форманы толтуруп баскычты басыңыз — биз сизден катталууну суранабыз, маалыматтар жоголбойт.{% else %}Заполните форму и нажмите кнопку — мы попросим зарегистрироваться, данные не потеряются.{% endif %}
     </div>
     {% endif %}
 
     {% if messages %}
         {% for message in messages %}
-        <div class="notice-box" style="{% if message.tags == 'error' %}background:#FEF2F2;border-color:#FECACA;color:#991B1B;{% endif %}">
-            {{ message }}
-        </div>
+        <div class="notice-box {% if message.tags == 'error' %}error{% endif %}">{{ message }}</div>
         {% endfor %}
     {% endif %}
 
@@ -71,7 +70,7 @@ textarea.form-input { resize: vertical; min-height: 100px; }
                 <div class="form-group">
                     <label class="form-label">{% if is_ky %}Категория{% else %}Категория{% endif %}</label>
                     <select name="category" class="form-input">
-                        <option value="">{% if is_ky %}Категорияны тандаңыз{% else %}Выберите категорию{% endif %}</option>
+                        <option value="">{% if is_ky %}Тандаңыз{% else %}Выберите{% endif %}</option>
                         {% for cat in form.category.field.queryset %}
                         <option value="{{ cat.pk }}" {% if form.category.value == cat.pk|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
                         {% endfor %}
@@ -98,7 +97,7 @@ textarea.form-input { resize: vertical; min-height: 100px; }
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">{% if is_ky %}Иш тажрыйбасы{% else %}Опыт работы{% endif %}</label>
+                    <label class="form-label">{% if is_ky %}Тажрыйба{% else %}Опыт работы{% endif %}</label>
                     <select name="experience" class="form-input">
                         {% for val, label in form.fields.experience.choices %}
                         <option value="{{ val }}" {% if form.experience.value == val %}selected{% endif %}>{{ label }}</option>
@@ -117,10 +116,10 @@ textarea.form-input { resize: vertical; min-height: 100px; }
         </div>
 
         <div class="form-card">
-            <div class="form-card-title">{% if is_ky %}Жумуш жарыясынын сүрөттөмөсү{% else %}Описание вакансии{% endif %}</div>
+            <div class="form-card-title">{% if is_ky %}Сүрөттөмө{% else %}Описание вакансии{% endif %}</div>
             <div class="form-group">
                 <label class="form-label">{% if is_ky %}Сүрөттөмө{% else %}Описание{% endif %} <span>*</span></label>
-                <textarea name="description" class="form-input" placeholder="{% if is_ky %}Жумуш жөнүндө айтып бериңиз...{% else %}Расскажите о вакансии...{% endif %}">{{ form.description.value|default:'' }}</textarea>
+                <textarea name="description" class="form-input" placeholder="{% if is_ky %}Жумуш жөнүндө...{% else %}Расскажите о вакансии...{% endif %}">{{ form.description.value|default:'' }}</textarea>
                 {% if form.description.errors %}<div class="form-error">{{ form.description.errors.0 }}</div>{% endif %}
             </div>
             <div class="form-group">
@@ -128,13 +127,13 @@ textarea.form-input { resize: vertical; min-height: 100px; }
                 <textarea name="responsibilities" class="form-input" placeholder="{% if is_ky %}Милдеттерди тизмелеңиз...{% else %}Перечислите обязанности...{% endif %}">{{ form.responsibilities.value|default:'' }}</textarea>
             </div>
             <div class="form-group">
-                <label class="form-label">{% if is_ky %}Талаптар{% else %}Требования к кандидату{% endif %}</label>
+                <label class="form-label">{% if is_ky %}Талаптар{% else %}Требования{% endif %}</label>
                 <textarea name="requirements" class="form-input" placeholder="{% if is_ky %}Талапкерден эмне талап кылынат...{% else %}Что требуется от кандидата...{% endif %}">{{ form.requirements.value|default:'' }}</textarea>
             </div>
         </div>
 
         <div class="form-card">
-            <div class="form-card-title">{% if is_ky %}Байланыш маалыматы{% else %}Контактная информация{% endif %}</div>
+            <div class="form-card-title">{% if is_ky %}Байланыш{% else %}Контактная информация{% endif %}</div>
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Email <span>*</span></label>

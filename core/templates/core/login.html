@@ -1,20 +1,20 @@
 {% extends 'core/base.html' %}
-{% block title %}{% if is_ky %}Кирүү — Жаштар Борбору{% else %}Вход — Жаштар Борбору{% endif %}{% endblock %}
+{% block title %}{% if is_ky %}Кирүү — Nexbit{% else %}Вход — Nexbit{% endif %}{% endblock %}
 {% block extra_style %}
 <style>
 .auth-page { min-height: calc(100vh - 54px); display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
-.auth-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 28px 24px; width: 100%; max-width: 420px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-.auth-title { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 4px; text-align: center; }
+.auth-card { background: var(--dark2); border: 1px solid var(--border); border-radius: 12px; padding: 28px 24px; width: 100%; max-width: 420px; }
+.auth-title { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 4px; text-align: center; letter-spacing: -0.3px; }
 .auth-sub { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 24px; }
 .form-group { margin-bottom: 14px; }
-.form-label { display: block; font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 5px; }
-.form-input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 14px; font-family: 'Segoe UI', sans-serif; color: #1E293B; background: var(--bg); outline: none; box-sizing: border-box; }
-.form-input:focus { border-color: var(--blue); background: var(--white); }
-.form-error { font-size: 12px; color: #DC2626; margin-top: 3px; }
-.submit-btn { width: 100%; padding: 12px; background: var(--blue); color: var(--white); border: none; border-radius: 7px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; font-family: 'Segoe UI', sans-serif; margin-top: 4px; }
-.submit-btn:hover { background: #1d44c0; }
+.form-label { display: block; font-size: 12px; font-weight: 600; color: #C8CDD8; margin-bottom: 5px; }
+.form-input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 14px; font-family: inherit; color: var(--text); background: var(--bg); outline: none; box-sizing: border-box; }
+.form-input:focus { border-color: var(--red); }
+.form-error { font-size: 12px; color: #F87171; margin-top: 3px; }
+.submit-btn { width: 100%; padding: 12px; background: var(--red); color: #fff; border: none; border-radius: 7px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; font-family: inherit; margin-top: 4px; }
+.submit-btn:hover { background: var(--red-dark); }
 .auth-footer { text-align: center; margin-top: 18px; font-size: 13px; color: var(--muted); }
-.auth-footer a { color: var(--blue); font-weight: 600; }
+.auth-footer a { color: var(--red); font-weight: 600; }
 </style>
 {% endblock %}
 
@@ -22,16 +22,16 @@
 <div class="auth-page">
     <div class="auth-card">
         <div class="auth-title">{% if is_ky %}Аккаунтка кирүү{% else %}Войти в аккаунт{% endif %}</div>
-        <div class="auth-sub">{% if is_ky %}Жаштар Борбору — жумуш порталы{% else %}Жаштар Борбору — портал вакансий{% endif %}</div>
+        <div class="auth-sub">Nexbit — {% if is_ky %}жумуш порталы{% else %}портал вакансий{% endif %}</div>
         <form method="POST">
             {% csrf_token %}
             <div class="form-group">
                 <label class="form-label">{% if is_ky %}Колдонуучу аты{% else %}Имя пользователя{% endif %}</label>
-                <input type="text" name="username" class="form-input" placeholder="{% if is_ky %}Колдонуучу атыңыз{% else %}Ваш логин{% endif %}" autofocus>
+                <input type="text" name="username" class="form-input" placeholder="{% if is_ky %}Логиниңиз{% else %}Ваш логин{% endif %}" autofocus>
             </div>
             <div class="form-group">
                 <label class="form-label">{% if is_ky %}Сырсөз{% else %}Пароль{% endif %}</label>
-                <input type="password" name="password" class="form-input" placeholder="{% if is_ky %}Сырсөзүңүз{% else %}Ваш пароль{% endif %}">
+                <input type="password" name="password" class="form-input" placeholder="••••••••">
             </div>
             {% if form.errors %}
             <div class="form-error" style="margin-bottom:10px;">{% if is_ky %}Логин же сырсөз туура эмес.{% else %}Неверный логин или пароль.{% endif %}</div>

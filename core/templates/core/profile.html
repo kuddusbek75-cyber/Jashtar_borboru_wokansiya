@@ -1,41 +1,43 @@
 {% extends 'core/base.html' %}
-{% block title %}{% if is_ky %}Менин профилим — Жаштар Борбору{% else %}Мой профиль — Жаштар Борбору{% endif %}{% endblock %}
+{% block title %}{% if is_ky %}Менин профилим — Nexbit{% else %}Мой профиль — Nexbit{% endif %}{% endblock %}
 {% block extra_style %}
 <style>
-.profile-header { background: var(--navy); padding: 20px 16px; border-bottom: 2px solid var(--blue); }
+.profile-header { background: var(--dark); padding: 20px 16px; border-bottom: 2px solid var(--red); }
 .profile-header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 14px; }
-.profile-avatar { width: 52px; height: 52px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.profile-avatar { width: 52px; height: 52px; background: var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: #fff; flex-shrink: 0; }
 .profile-name { font-size: 18px; font-weight: 700; color: #fff; }
-.profile-role { font-size: 12px; color: #94A3B8; margin-top: 3px; }
+.profile-role { font-size: 12px; color: var(--muted); margin-top: 3px; }
 .profile-layout { max-width: 1200px; margin: 16px auto; padding: 0 16px; display: flex; flex-direction: column; gap: 14px; }
-.section-card { background: var(--white); border: 1px solid var(--border); border-radius: 9px; padding: 16px; }
-.section-card-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+.section-card { background: var(--dark2); border: 1px solid var(--border); border-radius: 9px; padding: 16px; }
+.section-card-title { font-size: 14px; font-weight: 700; color: #E8EAF0; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
 .form-group { margin-bottom: 12px; }
-.form-label { display: block; font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 5px; }
-.form-input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 13px; font-family: 'Segoe UI', sans-serif; color: #1E293B; background: var(--bg); outline: none; box-sizing: border-box; }
-.form-input:focus { border-color: var(--blue); background: var(--white); }
+.form-label { display: block; font-size: 12px; font-weight: 600; color: #C8CDD8; margin-bottom: 5px; }
+.form-input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 13px; font-family: inherit; color: var(--text); background: var(--bg); outline: none; box-sizing: border-box; }
+.form-input:focus { border-color: var(--red); }
 textarea.form-input { resize: vertical; min-height: 70px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.save-btn { padding: 10px 20px; background: var(--blue); color: #fff; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Segoe UI', sans-serif; transition: background 0.2s; }
-.save-btn:hover { background: #1d44c0; }
-.post-btn { display: inline-block; padding: 9px 16px; background: var(--blue); color: #fff; border-radius: 7px; font-size: 13px; font-weight: 600; margin-bottom: 14px; }
-.post-btn:hover { background: #1d44c0; }
-.job-item { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; display: block; transition: border-color 0.2s; }
-.job-item:hover { border-color: var(--blue); }
-.job-item-title { font-size: 14px; font-weight: 600; color: var(--navy); }
+.save-btn { padding: 10px 20px; background: var(--red); color: #fff; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+.save-btn:hover { background: var(--red-dark); }
+.post-btn { display: inline-block; padding: 9px 16px; background: var(--red); color: #fff; border-radius: 7px; font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+.post-btn:hover { background: var(--red-dark); }
+.job-item { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 4px; display: block; transition: border-color 0.2s; background: var(--bg); }
+.job-item:hover { border-color: var(--red); }
+.job-item-title { font-size: 14px; font-weight: 600; color: #E8EAF0; }
 .job-item-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
-.status-approved { color: #16A34A; font-weight: 600; }
-.status-pending { color: #D97706; font-weight: 600; }
-.status-rejected { color: #DC2626; font-weight: 600; }
+.status-approved { color: #4ADE80; font-weight: 600; }
+.status-pending { color: var(--gold); font-weight: 600; }
+.status-rejected { color: #F87171; font-weight: 600; }
 .empty-msg { font-size: 13px; color: var(--muted); text-align: center; padding: 20px 0; }
-.applications-block { margin-top: 24px; border-top: 2px solid var(--border); padding-top: 16px; }
-.applications-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
-.applicant-card { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; background: #F8FAFC; }
-.applicant-name { font-size: 13px; font-weight: 700; color: var(--navy); }
+.delete-btn { background: rgba(212,43,43,0.15); color: #F87171; border: 1px solid rgba(212,43,43,0.3); border-radius: 6px; padding: 5px 12px; font-size: 12px; cursor: pointer; margin-bottom: 10px; font-family: inherit; }
+.delete-btn:hover { background: var(--red); color: #fff; }
+.applications-block { margin-top: 8px; border-top: 1px solid var(--border); padding-top: 16px; margin-bottom: 16px; }
+.applications-title { font-size: 13px; font-weight: 700; color: #E8EAF0; margin-bottom: 10px; }
+.applicant-card { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; background: var(--bg); }
+.applicant-name { font-size: 13px; font-weight: 700; color: #E8EAF0; }
 .applicant-meta { font-size: 11px; color: var(--muted); margin-top: 2px; margin-bottom: 6px; }
-.applicant-letter { font-size: 12px; color: #374151; background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; white-space: pre-line; }
+.applicant-letter { font-size: 12px; color: #9AA0B4; background: var(--dark2); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; white-space: pre-line; }
 .applicant-letter-empty { font-size: 12px; color: var(--muted); font-style: italic; }
-.app-count { display: inline-block; background: var(--blue); color: #fff; border-radius: 10px; font-size: 10px; font-weight: 700; padding: 1px 7px; margin-left: 6px; }
+.app-count { display: inline-block; background: var(--red); color: #fff; border-radius: 10px; font-size: 10px; font-weight: 700; padding: 1px 7px; margin-left: 6px; }
 @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
 @media (min-width: 768px) {
     .profile-header { padding: 28px 24px; }
@@ -81,7 +83,7 @@ textarea.form-input { resize: vertical; min-height: 70px; }
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">{% if is_ky %}Телефон{% else %}Телефон{% endif %}</label>
+                        <label class="form-label">Телефон</label>
                         <input type="text" name="phone" class="form-input" value="{{ profile.phone }}" placeholder="+996 700 000 000">
                     </div>
                     <div class="form-group">
@@ -102,8 +104,8 @@ textarea.form-input { resize: vertical; min-height: 70px; }
                 <div class="form-group">
                     <label class="form-label">{% if is_ky %}Менин ролум{% else %}Моя роль{% endif %}</label>
                     <select name="role" class="form-input">
-                        <option value="seeker" {% if profile.role == 'seeker' %}selected{% endif %}>{% if is_ky %}Иш издөөчү{% else %}Соискатель — ищу работу{% endif %}</option>
-                        <option value="employer" {% if profile.role == 'employer' %}selected{% endif %}>{% if is_ky %}Жумуш берүүчү{% else %}Работодатель — размещаю вакансии{% endif %}</option>
+                        <option value="seeker" {% if profile.role == 'seeker' %}selected{% endif %}>{% if is_ky %}Иш издөөчү{% else %}Соискатель{% endif %}</option>
+                        <option value="employer" {% if profile.role == 'employer' %}selected{% endif %}>{% if is_ky %}Жумуш берүүчү{% else %}Работодатель{% endif %}</option>
                     </select>
                 </div>
                 <button type="submit" class="save-btn">{% if is_ky %}Сактоо{% else %}Сохранить{% endif %}</button>
@@ -114,11 +116,8 @@ textarea.form-input { resize: vertical; min-height: 70px; }
     <div>
         <div class="section-card">
             <div class="section-card-title">
-                {% if profile.role == 'employer' %}
-                    {% if is_ky %}Менин жарыяларым{% else %}Мои вакансии{% endif %}
-                {% else %}
-                    {% if is_ky %}Менин откликтерим{% else %}Мои отклики{% endif %}
-                {% endif %}
+                {% if profile.role == 'employer' %}{% if is_ky %}Менин жарыяларым{% else %}Мои вакансии{% endif %}
+                {% else %}{% if is_ky %}Менин откликтерим{% else %}Мои отклики{% endif %}{% endif %}
             </div>
 
             {% if profile.role == 'employer' %}
@@ -127,25 +126,23 @@ textarea.form-input { resize: vertical; min-height: 70px; }
                     {% if job.status == 'approved' %}
                     <a href="{% url 'core:job_detail' job.pk %}" class="job-item">
                     {% else %}
-                    <a href="{% url 'core:job_pending' %}" class="job-item">
+                    <a href="#" class="job-item">
                     {% endif %}
                         <div class="job-item-title">
                             {{ job.title }}
-                            {% if job.applications.count > 0 %}
-                                <span class="app-count">{{ job.applications.count }} {% if is_ky %}отклик{% else %}отклик{% endif %}</span>
-                            {% endif %}
+                            {% if job.applications.count > 0 %}<span class="app-count">{{ job.applications.count }}</span>{% endif %}
                         </div>
                         <div class="job-item-meta">
                             {{ job.company }} · {{ job.location }} · {{ job.created_at|date:"d.m.Y" }}
-                            {% if job.status == 'approved' %}
-                                <span class="status-approved"> · {% if is_ky %}Жактырылды{% else %}Опубликована{% endif %} ✅</span>
-                            {% elif job.status == 'pending' %}
-                                <span class="status-pending"> · {% if is_ky %}Текшерүүдө{% else %}На проверке{% endif %} ⏳</span>
-                            {% else %}
-                                <span class="status-rejected"> · {% if is_ky %}Четке кагылды{% else %}Отклонена{% endif %} ❌</span>
-                            {% endif %}
+                            {% if job.status == 'approved' %}<span class="status-approved"> · {% if is_ky %}Жактырылды{% else %}Опубликована{% endif %} ✅</span>
+                            {% elif job.status == 'pending' %}<span class="status-pending"> · {% if is_ky %}Текшерүүдө{% else %}На проверке{% endif %} ⏳</span>
+                            {% else %}<span class="status-rejected"> · {% if is_ky %}Четке кагылды{% else %}Отклонена{% endif %} ❌</span>{% endif %}
                         </div>
                     </a>
+                    <form method="POST" action="{% url 'core:delete_job' job.pk %}" onsubmit="return confirm('{% if is_ky %}Жарыяны өчүрүү?{% else %}Удалить вакансию?{% endif %}')">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-btn">🗑 {% if is_ky %}Өчүрүү{% else %}Удалить{% endif %}</button>
+                    </form>
 
                     {% if job.applications.count > 0 %}
                     <div class="applications-block">
@@ -153,37 +150,28 @@ textarea.form-input { resize: vertical; min-height: 70px; }
                         {% for app in job.applications.all %}
                         <div class="applicant-card">
                             <div class="applicant-name">{{ app.applicant.get_full_name|default:app.applicant.username }}</div>
-                            <div class="applicant-meta">
-                                {{ app.applicant.email }}
-                                {% if app.applicant.profile.phone %} · {{ app.applicant.profile.phone }}{% endif %}
-                                {% if app.applicant.profile.city %} · {{ app.applicant.profile.city }}{% endif %}
-                                · {{ app.created_at|date:"d.m.Y H:i" }}
-                            </div>
+                            <div class="applicant-meta">{{ app.applicant.email }} · {{ app.created_at|date:"d.m.Y H:i" }}</div>
                             {% if app.cover_letter %}
                                 <div class="applicant-letter">{{ app.cover_letter }}</div>
                             {% else %}
-                                <div class="applicant-letter-empty">{% if is_ky %}Кат жазылган эмес{% else %}Сопроводительное письмо не указано{% endif %}</div>
+                                <div class="applicant-letter-empty">{% if is_ky %}Кат жазылган эмес{% else %}Письмо не указано{% endif %}</div>
                             {% endif %}
                         </div>
                         {% endfor %}
                     </div>
                     {% endif %}
-
                 {% empty %}
-                    <div class="empty-msg">{% if is_ky %}Сиз азырынча бир дагы жумуш жарыяламадыңыз{% else %}Вы ещё не разместили ни одной вакансии{% endif %}</div>
+                    <div class="empty-msg">{% if is_ky %}Сиз азырынча жумуш жарыяламадыңыз{% else %}Вы ещё не разместили ни одной вакансии{% endif %}</div>
                 {% endfor %}
 
             {% else %}
                 {% for app in my_applications %}
                 <a href="{% url 'core:job_detail' app.job.pk %}" class="job-item">
                     <div class="job-item-title">{{ app.job.title }}</div>
-                    <div class="job-item-meta">
-                        {{ app.job.company }} · {{ app.job.location }} · {{ app.created_at|date:"d.m.Y" }}
-                        <span class="status-approved"> · {% if is_ky %}Жөнөтүлдү{% else %}Отклик отправлен{% endif %} ✅</span>
-                    </div>
+                    <div class="job-item-meta">{{ app.job.company }} · {{ app.job.location }} · {{ app.created_at|date:"d.m.Y" }} <span class="status-approved"> · {% if is_ky %}Жөнөтүлдү{% else %}Отправлен{% endif %} ✅</span></div>
                 </a>
                 {% empty %}
-                    <div class="empty-msg">{% if is_ky %}Сиз азырынча бир дагы жумушка өтүнгөн жоксуз{% else %}Вы ещё не откликались ни на одну вакансию{% endif %}</div>
+                    <div class="empty-msg">{% if is_ky %}Сиз азырынча откликтеген жоксуз{% else %}Вы ещё не откликались ни на одну вакансию{% endif %}</div>
                 {% endfor %}
             {% endif %}
         </div>

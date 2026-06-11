@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+import os
 
 
 class CoreConfig(AppConfig):
@@ -7,5 +8,6 @@ class CoreConfig(AppConfig):
     verbose_name = 'Вакансии'
 
     def ready(self):
-        from .telegram_bot import start_bot
-        start_bot()
+        if os.environ.get('RUN_MAIN') == 'true':
+            from .telegram_bot import start_bot
+            start_bot()

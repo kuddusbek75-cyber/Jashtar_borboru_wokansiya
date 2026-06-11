@@ -4,86 +4,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Жаштар Борбору{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}Портал вакансий для молодёжи Кыргызстана{% endblock %}">
-    <meta name="keywords" content="{% block meta_keywords %}вакансии Бишкек, работа Кыргызстан{% endblock %}">
+    <title>{% block title %}Nexbit{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Портал вакансий Кыргызстана{% endblock %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --navy: #0B1F3B;
-            --blue: #1E4ED8;
-            --green: #16A34A;
-            --muted: #64748B;
-            --border: #E2E8F0;
-            --white: #FFFFFF;
-            --bg: #F8FAFC;
+            --red:      #D42B2B;
+            --red-dark: #A81E1E;
+            --gold:     #F5A623;
+            --dark:     #111318;
+            --dark2:    #1C1F26;
+            --muted:    #8A8F9E;
+            --border:   #2A2D36;
+            --white:    #FFFFFF;
+            --bg:       #15171D;
+            --text:     #E8EAF0;
+            --green:    #4ADE80;
         }
         html, body { overflow-x: hidden; width: 100%; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #1E293B; font-size: 14px; line-height: 1.5; }
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
         a { text-decoration: none; color: inherit; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
         .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
-        .badge-blue  { background: #EFF6FF; color: var(--blue); }
-        .badge-gray  { background: #F1F5F9; color: var(--muted); }
-        .badge-green { background: #F0FDF4; color: var(--green); }
+        .badge-red  { background: rgba(212,43,43,0.15); color: #F87171; }
+        .badge-gray { background: rgba(255,255,255,0.07); color: var(--muted); }
+        .badge-gold { background: rgba(245,166,35,0.15); color: var(--gold); }
 
         /* NAV */
-        nav { background: var(--navy); border-bottom: 2px solid var(--blue); position: sticky; top: 0; z-index: 100; }
+        nav { background: var(--dark); border-bottom: 2px solid var(--red); position: sticky; top: 0; z-index: 100; }
         .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; height: 54px; }
 
-        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-        .nav-logo-img { height: 38px; width: 38px; object-fit: contain; border-radius: 50%; flex-shrink: 0; }
-        .nav-logo-text { font-size: 15px; font-weight: 700; color: #fff; white-space: nowrap; }
-        .nav-logo-text span { color: #60A5FA; }
+        .nav-logo { display: flex; align-items: center; gap: 10px; }
+        .nav-logo-img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+        .nav-logo-text { font-size: 16px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+        .nav-logo-text span { color: var(--gold); }
 
         .nav-links { display: flex; gap: 4px; align-items: center; }
-        .nav-links a { color: #CBD5E1; font-size: 13px; font-weight: 500; padding: 6px 10px; border-radius: 5px; transition: background 0.2s; }
-        .nav-links a:hover { background: rgba(255,255,255,0.08); color: #fff; }
-        .btn-nav { background: var(--blue) !important; color: #fff !important; }
-        .btn-nav:hover { background: #1d44c0 !important; }
-        .btn-nav-outline { border: 1px solid rgba(255,255,255,0.3) !important; color: #fff !important; }
-        .nav-avatar { width: 28px; height: 28px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
-        .nav-username { color: #CBD5E1; font-size: 12px; }
-        .logout-form { display: inline; }
-        .logout-btn { background: none; border: 1px solid rgba(255,255,255,0.25); color: #CBD5E1; border-radius: 5px; font-size: 12px; font-weight: 500; padding: 5px 10px; cursor: pointer; font-family: inherit; }
-        .logout-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        .nav-links a { color: #9AA0B4; font-size: 13px; font-weight: 500; padding: 6px 10px; border-radius: 6px; transition: background 0.2s; }
+        .nav-links a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+        .btn-nav { background: var(--red) !important; color: #fff !important; font-weight: 600 !important; }
+        .btn-nav:hover { background: var(--red-dark) !important; }
+        .btn-nav-outline { border: 1px solid rgba(255,255,255,0.2) !important; color: #fff !important; }
 
-        /* Переключатель языка — ПК */
-        .lang-switcher { display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; overflow: hidden; margin-left: 6px; }
-        .lang-switcher a { padding: 4px 10px; font-size: 12px; font-weight: 700; color: #CBD5E1; transition: background 0.2s; }
-        .lang-switcher a:hover { background: rgba(255,255,255,0.08); color: #fff; }
-        .lang-switcher a.active { background: var(--blue); color: #fff; }
+        .nav-avatar { width: 28px; height: 28px; background: var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
+        .nav-username { color: #9AA0B4; font-size: 12px; }
+        .logout-form { display: inline; }
+        .logout-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9AA0B4; border-radius: 5px; font-size: 12px; font-weight: 500; padding: 5px 10px; cursor: pointer; font-family: inherit; }
+        .logout-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
+
+        .lang-switcher { display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; overflow: hidden; margin-left: 6px; }
+        .lang-switcher a { padding: 4px 10px; font-size: 12px; font-weight: 700; color: #9AA0B4; transition: background 0.2s; }
+        .lang-switcher a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+        .lang-switcher a.active { background: var(--red); color: #fff; }
 
         .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; background: none; border: none; }
-        .burger span { display: block; width: 22px; height: 2px; background: #CBD5E1; border-radius: 2px; }
+        .burger span { display: block; width: 22px; height: 2px; background: #9AA0B4; border-radius: 2px; }
 
-        .mobile-menu { display: none; background: var(--navy); border-top: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; flex-direction: column; gap: 6px; }
+        .mobile-menu { display: none; background: var(--dark); border-top: 1px solid rgba(255,255,255,0.08); padding: 12px 16px; flex-direction: column; gap: 6px; }
         .mobile-menu.open { display: flex; }
-        .mobile-menu a { color: #CBD5E1; font-size: 14px; font-weight: 500; padding: 10px 14px; border-radius: 7px; transition: background 0.2s; display: block; }
-        .mobile-menu a:hover { background: rgba(255,255,255,0.08); color: #fff; }
-        .mobile-menu .btn-nav { background: var(--blue) !important; color: #fff !important; text-align: center; }
-        .mobile-menu .btn-nav-outline { border: 1px solid rgba(255,255,255,0.3) !important; color: #fff !important; text-align: center; }
-        .mobile-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0; }
+        .mobile-menu a { color: #9AA0B4; font-size: 14px; font-weight: 500; padding: 10px 14px; border-radius: 7px; transition: background 0.2s; display: block; }
+        .mobile-menu a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+        .mobile-menu .btn-nav { background: var(--red) !important; color: #fff !important; text-align: center; }
+        .mobile-menu .btn-nav-outline { border: 1px solid rgba(255,255,255,0.2) !important; color: #fff !important; text-align: center; }
+        .mobile-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 4px 0; }
         .mobile-user-info { display: flex; align-items: center; gap: 10px; padding: 10px 14px; }
-        .mobile-avatar { width: 32px; height: 32px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
+        .mobile-avatar { width: 32px; height: 32px; background: var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
         .mobile-username { color: #fff; font-size: 14px; font-weight: 600; }
-        .mobile-logout-btn { width: 100%; padding: 10px 14px; background: none; border: 1px solid rgba(255,255,255,0.2); color: #CBD5E1; border-radius: 7px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; text-align: center; }
-        .mobile-logout-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
-
-        /* Переключатель языка — мобилка */
+        .mobile-logout-btn { width: 100%; padding: 10px 14px; background: none; border: 1px solid rgba(255,255,255,0.15); color: #9AA0B4; border-radius: 7px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; text-align: center; }
+        .mobile-logout-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
         .mobile-lang-switcher { display: flex; gap: 8px; padding: 4px 14px; }
-        .mobile-lang-switcher a { flex: 1; text-align: center; padding: 9px; border-radius: 7px; font-size: 14px; font-weight: 700; color: #CBD5E1; border: 1px solid rgba(255,255,255,0.2); transition: background 0.2s; }
-        .mobile-lang-switcher a:hover { background: rgba(255,255,255,0.08); color: #fff; }
-        .mobile-lang-switcher a.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+        .mobile-lang-switcher a { flex: 1; text-align: center; padding: 9px; border-radius: 7px; font-size: 14px; font-weight: 700; color: #9AA0B4; border: 1px solid rgba(255,255,255,0.15); transition: background 0.2s; }
+        .mobile-lang-switcher a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+        .mobile-lang-switcher a.active { background: var(--red); color: #fff; border-color: var(--red); }
 
         .messages-wrap { max-width: 1200px; margin: 10px auto; padding: 0 16px; }
         .msg { padding: 10px 14px; border-radius: 7px; margin-bottom: 6px; font-size: 13px; font-weight: 500; }
-        .msg-success { background: #F0FDF4; color: #166534; border: 1px solid #BBF7D0; }
-        .msg-error   { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
-        .msg-info    { background: #EFF6FF; color: #1E40AF; border: 1px solid #BFDBFE; }
+        .msg-success { background: rgba(22,163,74,0.12); color: #4ADE80; border: 1px solid rgba(22,163,74,0.25); }
+        .msg-error   { background: rgba(212,43,43,0.12); color: #F87171; border: 1px solid rgba(212,43,43,0.25); }
+        .msg-info    { background: rgba(245,166,35,0.12); color: var(--gold); border: 1px solid rgba(245,166,35,0.25); }
 
-        footer { background: var(--navy); color: #64748B; padding: 24px 16px; text-align: center; font-size: 12px; margin-top: 48px; border-top: 2px solid var(--blue); }
-        footer a { color: #60A5FA; }
+        footer { background: var(--dark); color: var(--muted); padding: 24px 16px; text-align: center; font-size: 12px; margin-top: 48px; border-top: 2px solid var(--red); }
+        footer a { color: var(--gold); }
         .footer-links-row { display: flex; justify-content: center; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
 
         @media (max-width: 640px) {
@@ -97,12 +100,13 @@
 <nav>
     <div class="nav-inner">
         <a href="{% url 'core:home' %}" class="nav-logo">
-            <img src="{% static 'images/logo.png' %}" alt="Лого" class="nav-logo-img">
-            <span class="nav-logo-text">Жаштар <span>Борбору</span></span>
+            <img src="{% static 'images/logo.png' %}" alt="Nexbit" class="nav-logo-img">
+            <span class="nav-logo-text">Nex<span>bit</span></span>
         </a>
         <div class="nav-links">
-            <a href="{% url 'core:job_list' %}">Вакансии</a>
-            <a href="{% url 'core:post_job' %}" class="btn-nav">+ Вакансия</a>
+            <a href="{% url 'core:job_list' %}">{% if is_ky %}Жумуштар{% else %}Вакансии{% endif %}</a>
+            <a href="{% url 'core:support' %}">{% if is_ky %}Колдоо{% else %}Поддержка{% endif %}</a>
+            <a href="{% url 'core:post_job' %}" class="btn-nav">+ {% if is_ky %}Жарыя{% else %}Вакансия{% endif %}</a>
             {% if user.is_authenticated %}
                 <div style="display:flex;align-items:center;gap:6px;">
                     <div class="nav-avatar">{{ user.username|first|upper }}</div>
@@ -110,11 +114,11 @@
                 </div>
                 <form method="POST" action="{% url 'core:logout' %}" class="logout-form">
                     {% csrf_token %}
-                    <button type="submit" class="logout-btn">Выйти</button>
+                    <button type="submit" class="logout-btn">{% if is_ky %}Чыгуу{% else %}Выйти{% endif %}</button>
                 </form>
             {% else %}
-                <a href="{% url 'core:register' %}" class="btn-nav-outline" style="padding:5px 10px;">Регистрация</a>
-                <a href="{% url 'core:login' %}" style="padding:5px 10px;color:#CBD5E1;">Войти</a>
+                <a href="{% url 'core:register' %}" class="btn-nav-outline" style="padding:5px 10px;">{% if is_ky %}Катталуу{% else %}Регистрация{% endif %}</a>
+                <a href="{% url 'core:login' %}" style="padding:5px 10px;color:#9AA0B4;">{% if is_ky %}Кирүү{% else %}Войти{% endif %}</a>
             {% endif %}
             <div class="lang-switcher">
                 <a href="{% url 'core:set_lang' %}?lang=ru" {% if LANG == 'ru' %}class="active"{% endif %}>RU</a>
@@ -132,20 +136,22 @@
                 <div class="mobile-username">{{ user.username }}</div>
             </div>
             <div class="mobile-divider"></div>
-            <a href="{% url 'core:job_list' %}">Вакансии</a>
-            <a href="{% url 'core:post_job' %}" class="btn-nav">+ Разместить вакансию</a>
-            <a href="{% url 'core:profile' %}">Мой профиль</a>
+            <a href="{% url 'core:job_list' %}">{% if is_ky %}Жумуштар{% else %}Вакансии{% endif %}</a>
+            <a href="{% url 'core:support' %}">{% if is_ky %}Колдоо{% else %}Поддержка{% endif %}</a>
+            <a href="{% url 'core:post_job' %}" class="btn-nav">+ {% if is_ky %}Жумуш жарыялоо{% else %}Разместить вакансию{% endif %}</a>
+            <a href="{% url 'core:profile' %}">{% if is_ky %}Менин профилим{% else %}Мой профиль{% endif %}</a>
             <div class="mobile-divider"></div>
             <form method="POST" action="{% url 'core:logout' %}">
                 {% csrf_token %}
-                <button type="submit" class="mobile-logout-btn">Выйти</button>
+                <button type="submit" class="mobile-logout-btn">{% if is_ky %}Чыгуу{% else %}Выйти{% endif %}</button>
             </form>
         {% else %}
-            <a href="{% url 'core:job_list' %}">Вакансии</a>
-            <a href="{% url 'core:post_job' %}" class="btn-nav">+ Разместить вакансию</a>
+            <a href="{% url 'core:job_list' %}">{% if is_ky %}Жумуштар{% else %}Вакансии{% endif %}</a>
+            <a href="{% url 'core:support' %}">{% if is_ky %}Колдоо{% else %}Поддержка{% endif %}</a>
+            <a href="{% url 'core:post_job' %}" class="btn-nav">+ {% if is_ky %}Жумуш жарыялоо{% else %}Разместить вакансию{% endif %}</a>
             <div class="mobile-divider"></div>
-            <a href="{% url 'core:register' %}" class="btn-nav-outline">Регистрация</a>
-            <a href="{% url 'core:login' %}">Войти</a>
+            <a href="{% url 'core:register' %}" class="btn-nav-outline">{% if is_ky %}Катталуу{% else %}Регистрация{% endif %}</a>
+            <a href="{% url 'core:login' %}">{% if is_ky %}Кирүү{% else %}Войти{% endif %}</a>
         {% endif %}
         <div class="mobile-divider"></div>
         <div class="mobile-lang-switcher">
@@ -168,10 +174,11 @@
 {% block content %}{% endblock %}
 
 <footer>
-    <p>© 2026 Жаштар Борбору — Портал вакансий Кыргызской Республики</p>
+    <p>© 2026 Nexbit — Портал вакансий Кыргызской Республики 🇰🇬</p>
     <div class="footer-links-row">
-        <a href="{% url 'core:job_list' %}">Вакансии</a>
-        <a href="{% url 'core:post_job' %}">Разместить вакансию</a>
+        <a href="{% url 'core:job_list' %}">{% if is_ky %}Жумуштар{% else %}Вакансии{% endif %}</a>
+        <a href="{% url 'core:post_job' %}">{% if is_ky %}Жарыялоо{% else %}Разместить вакансию{% endif %}</a>
+        <a href="{% url 'core:support' %}">{% if is_ky %}Колдоо{% else %}Поддержка{% endif %}</a>
         <a href="/admin/">Админ</a>
     </div>
 </footer>

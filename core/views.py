@@ -4,7 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q, F
-from .models import Job, Category, UserProfile, JobApplication
+import logging
+
+logger = logging.getLogger(__name__)
+
+from .models import Job, Category, UserProfile, JobApplication, SupportTicket
 from .forms import RegisterForm, ProfileForm, JobPostForm
 
 
@@ -246,19 +250,14 @@ def job_list_view(request):
 
 def job_detail_view(request, pk):
     job = get_object_or_404(Job, pk=pk, is_active=True)
-
-    # Счётчик просмотров
     Job.objects.filter(pk=pk).update(views_count=F('views_count') + 1)
     job.refresh_from_db()
-
     related_jobs = Job.objects.filter(
         is_active=True, category=job.category
     ).exclude(pk=pk).order_by('-created_at')[:4]
-
     already_applied = False
     if request.user.is_authenticated:
         already_applied = JobApplication.objects.filter(job=job, applicant=request.user).exists()
-
     return render(request, 'core/job_detail.html', {
         'job': job,
         'related_jobs': related_jobs,
@@ -269,32 +268,19 @@ def job_detail_view(request, pk):
 @login_required
 def apply_job_view(request, pk):
     job = get_object_or_404(Job, pk=pk, is_active=True)
-
     if JobApplication.objects.filter(job=job, applicant=request.user).exists():
         messages.warning(request, 'Вы уже откликались на эту вакансию.' if request.session.get('lang') != 'ky' else 'Сиз бул жумушка мурунтан өтүндүңүз.')
         return redirect('core:job_detail', pk=pk)
-
     if request.method == 'POST':
         cover_letter = request.POST.get('cover_letter', '')
-        app = JobApplication.objects.create(
+        JobApplication.objects.create(
             job=job,
             applicant=request.user,
             cover_letter=cover_letter,
         )
-        # Уведомление в Telegram
-        try:
-            from .telegram_bot import send_application_notify
-            send_application_notify(app)
-        except Exception:
-            pass
         messages.success(request, 'Отклик отправлен!' if request.session.get('lang') != 'ky' else 'Өтүнүч жөнөтүлдү!')
         return redirect('core:job_detail', pk=pk)
-
     return render(request, 'core/apply_job.html', {'job': job})
-
-
-def job_pending_view(request):
-    return render(request, 'core/job_pending.html')
 
 
 def register_view(request):
@@ -309,7 +295,6 @@ def register_view(request):
             profile.role = role
             profile.save()
             login(request, user)
-
             pending_job = request.session.pop('pending_job', None)
             if pending_job:
                 profile.role = 'employer'
@@ -324,13 +309,12 @@ def register_view(request):
                     try:
                         from .telegram_bot import send_telegram
                         send_telegram(job)
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logger.error(f'register send_telegram error: {e}')
                     return redirect('core:job_pending')
                 else:
                     messages.warning(request, 'Аккаунт создан. Проверьте данные вакансии и опубликуйте снова.')
                     return redirect('core:post_job')
-
             messages.success(request, 'Добро пожаловать! Аккаунт успешно создан.')
             return redirect('core:profile')
     else:
@@ -379,10 +363,8 @@ def profile_view(request):
         profile.save()
         messages.success(request, 'Профиль обновлён.')
         return redirect('core:profile')
-
     my_jobs = Job.objects.filter(author=request.user).order_by('-created_at') if profile.role == 'employer' else []
     my_applications = JobApplication.objects.filter(applicant=request.user).select_related('job').order_by('-created_at') if profile.role == 'seeker' else []
-
     return render(request, 'core/profile.html', {
         'profile': profile,
         'my_jobs': my_jobs,
@@ -392,7 +374,6 @@ def profile_view(request):
 
 def post_job(request):
     initial_data = request.session.pop('pending_job', None)
-
     if request.method == 'POST':
         form = JobPostForm(request.POST)
         if form.is_valid():
@@ -400,31 +381,68 @@ def post_job(request):
                 request.session['pending_job'] = request.POST.dict()
                 messages.info(request, 'Данные сохранены. Зарегистрируйтесь чтобы опубликовать вакансию.')
                 return redirect('core:register')
-
             profile, _ = UserProfile.objects.get_or_create(user=request.user)
             if profile.role != 'employer':
                 profile.role = 'employer'
                 profile.save()
-
             job = form.save(commit=False)
             job.author = request.user
             job.is_active = False
             job.status = 'pending'
             job.save()
-
             try:
                 from .telegram_bot import send_telegram
                 send_telegram(job)
-            except Exception:
-                pass
-
+            except Exception as e:
+                logger.error(f'post_job send_telegram error: {e}')
             return redirect('core:job_pending')
         else:
             messages.error(request, 'Исправьте ошибки в форме.')
     else:
         form = JobPostForm(initial=initial_data)
-
     return render(request, 'core/post_job.html', {'form': form})
+
+
+def job_pending_view(request):
+    return render(request, 'core/job_pending.html')
+
+
+@login_required
+def delete_job(request, pk):
+    job = get_object_or_404(Job, pk=pk, author=request.user)
+    if request.method == 'POST':
+        job.delete()
+        messages.success(request, 'Вакансия удалена.')
+    return redirect('core:profile')
+
+
+def support_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        message = request.POST.get('message', '').strip()
+
+        if not name or not email or not message:
+            messages.error(request, 'Заполните все поля.')
+            return render(request, 'core/support.html')
+
+        ticket = SupportTicket.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            name=name,
+            email=email,
+            message=message,
+        )
+
+        try:
+            from .telegram_bot import send_support_notify
+            send_support_notify(ticket)
+        except Exception as e:
+            logger.error(f'support_view send_support_notify error: {e}')
+
+        messages.success(request, 'Ваше обращение отправлено! Мы свяжемся с вами.')
+        return redirect('core:support')
+
+    return render(request, 'core/support.html')
 
 
 def set_lang(request):

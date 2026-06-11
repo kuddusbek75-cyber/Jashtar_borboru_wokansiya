@@ -1,105 +1,130 @@
 {% extends 'core/base.html' %}
 {% load static %}
-{% block title %}Жаштар Борбору — Портал вакансий{% endblock %}
+{% block title %}Nexbit — Портал вакансий Кыргызстана{% endblock %}
 {% block extra_style %}
 <style>
 .hero {
-    background: linear-gradient(135deg, #0B1F3B 0%, #1a3a6b 100%);
-    padding: 40px 16px 48px;
+    background: linear-gradient(135deg, #111318 0%, #1C1217 60%, #2A1010 100%);
+    padding: 48px 16px 56px;
+    border-bottom: 1px solid rgba(212,43,43,0.2);
+    position: relative;
+    overflow: hidden;
+}
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(212,43,43,0.12) 0%, transparent 70%);
+    pointer-events: none;
 }
 .hero-inner {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
     align-items: center;
-    gap: 40px;
+    gap: 48px;
+    position: relative;
 }
-.hero-logo {
-    width: 180px;
-    height: 180px;
-    object-fit: contain;
-    border-radius: 50%;
-    flex-shrink: 0;
-    background: rgba(255,255,255,0.08);
-    padding: 8px;
-}
-.hero-label {
-    display: inline-block;
-    background: rgba(30,78,216,0.25);
-    border: 1px solid rgba(30,78,216,0.4);
-    color: #93C5FD; font-size: 11px; font-weight: 600;
-    padding: 4px 12px; border-radius: 20px;
-    letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 14px;
+.hero-badge-wrap { margin-bottom: 16px; }
+.hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(212,43,43,0.12);
+    border: 1px solid rgba(212,43,43,0.3);
+    color: #F87171; font-size: 11px; font-weight: 600;
+    padding: 5px 12px; border-radius: 20px;
+    letter-spacing: 0.5px; text-transform: uppercase;
 }
 .hero-title {
-    font-size: 26px; font-weight: 700; color: #fff;
-    line-height: 1.25; margin-bottom: 12px;
+    font-size: 28px; font-weight: 800; color: #fff;
+    line-height: 1.2; margin-bottom: 14px; letter-spacing: -0.5px;
 }
-.hero-title span { color: #60A5FA; }
-.hero-desc { font-size: 14px; color: #94A3B8; line-height: 1.6; margin-bottom: 24px; }
+.hero-title span { color: var(--gold); }
+.hero-desc { font-size: 14px; color: #8A8F9E; line-height: 1.7; margin-bottom: 28px; max-width: 480px; }
 .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-.btn-hero { padding: 10px 20px; font-size: 14px; border-radius: 7px; font-weight: 600; transition: all 0.2s; display: inline-block; }
-.btn-hero-primary { background: var(--blue); color: #fff; }
-.btn-hero-primary:hover { background: #1d44c0; }
-.btn-hero-secondary { background: rgba(255,255,255,0.08); color: #E2E8F0; border: 1px solid rgba(255,255,255,0.15); }
-.btn-hero-secondary:hover { background: rgba(255,255,255,0.14); }
+.btn-hero { padding: 11px 22px; font-size: 14px; border-radius: 8px; font-weight: 600; transition: all 0.2s; display: inline-block; font-family: inherit; }
+.btn-hero-primary { background: var(--red); color: #fff; border: none; }
+.btn-hero-primary:hover { background: var(--red-dark); transform: translateY(-1px); }
+.btn-hero-secondary { background: rgba(255,255,255,0.06); color: #C8CDD8; border: 1px solid rgba(255,255,255,0.12); }
+.btn-hero-secondary:hover { background: rgba(255,255,255,0.1); }
 
-.stats { background: var(--white); border-bottom: 1px solid var(--border); }
+.hero-emblem {
+    flex-shrink: 0;
+    width: 160px; height: 160px;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 2px solid rgba(212,43,43,0.2);
+    background: rgba(212,43,43,0.08);
+}
+.hero-emblem img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.stats { background: var(--dark2); border-bottom: 1px solid var(--border); }
 .stats-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); }
-.stat-item { padding: 18px 10px; text-align: center; border-right: 1px solid var(--border); }
+.stat-item { padding: 20px 10px; text-align: center; border-right: 1px solid var(--border); }
 .stat-item:last-child { border-right: none; }
-.stat-number { font-size: 26px; font-weight: 700; color: var(--navy); display: block; line-height: 1; margin-bottom: 4px; }
-.stat-label { font-size: 11px; color: var(--muted); font-weight: 500; }
+.stat-number { font-size: 28px; font-weight: 800; color: var(--gold); display: block; line-height: 1; margin-bottom: 5px; letter-spacing: -1px; }
+.stat-label { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; }
 
-.section { padding: 32px 16px; max-width: 1200px; margin: 0 auto; }
+.section { padding: 36px 16px; max-width: 1200px; margin: 0 auto; }
 .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.section-title { font-size: 18px; font-weight: 700; color: var(--navy); }
-.section-link { font-size: 13px; font-weight: 600; color: var(--blue); }
-.section-link:hover { text-decoration: underline; }
+.section-title { font-size: 17px; font-weight: 700; color: #E8EAF0; }
+.section-link { font-size: 13px; font-weight: 600; color: var(--red); }
+.section-link:hover { color: #F87171; }
 
 .jobs-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-.job-card { background: var(--white); border: 1px solid var(--border); border-radius: 9px; padding: 14px 16px; transition: all 0.2s; display: block; position: relative; }
-.job-card:hover { border-color: var(--blue); box-shadow: 0 3px 12px rgba(30,78,216,0.1); }
-.job-card.featured { border-left: 3px solid var(--blue); }
-.featured-mark { position: absolute; top: 10px; right: 10px; font-size: 10px; font-weight: 600; color: var(--blue); background: #EFF6FF; padding: 2px 6px; border-radius: 4px; }
+.job-card {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px;
+    transition: all 0.2s; display: block; position: relative;
+}
+.job-card:hover { border-color: var(--red); box-shadow: 0 4px 16px rgba(212,43,43,0.1); }
+.job-card.featured { border-left: 3px solid var(--gold); }
+.featured-mark { position: absolute; top: 10px; right: 10px; font-size: 10px; font-weight: 600; color: var(--gold); background: rgba(245,166,35,0.12); padding: 2px 7px; border-radius: 4px; }
 .job-company { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 3px; }
-.job-title { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 8px; line-height: 1.3; }
+.job-title { font-size: 14px; font-weight: 600; color: #E8EAF0; margin-bottom: 8px; line-height: 1.3; }
 .job-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
-.job-salary { font-size: 13px; font-weight: 700; color: var(--green); }
+.job-salary { font-size: 13px; font-weight: 700; color: #4ADE80; }
 
 .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-.cat-card { background: var(--white); border: 1px solid var(--border); border-radius: 9px; padding: 14px; text-align: center; transition: all 0.2s; display: block; }
-.cat-card:hover { border-color: var(--blue); background: #EFF6FF; }
-.cat-name { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 3px; }
+.cat-card {
+    background: var(--dark2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px; text-align: center;
+    transition: all 0.2s; display: block;
+}
+.cat-card:hover { border-color: var(--red); background: rgba(212,43,43,0.06); }
+.cat-name { font-size: 13px; font-weight: 600; color: #E8EAF0; margin-bottom: 3px; }
 .cat-count { font-size: 11px; color: var(--muted); }
 
-.cta { background: linear-gradient(135deg, var(--navy), #1a3a6b); border-radius: 12px; padding: 32px 24px; text-align: center; margin: 0 16px 40px; }
-.cta-title { font-size: 20px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
-.cta-desc { font-size: 13px; color: #94A3B8; margin-bottom: 20px; }
+.cta-wrap { padding: 0 16px 48px; max-width: 1200px; margin: 0 auto; }
+.cta {
+    background: linear-gradient(135deg, rgba(212,43,43,0.15), rgba(245,166,35,0.08));
+    border: 1px solid rgba(212,43,43,0.25);
+    border-radius: 14px; padding: 36px 28px; text-align: center;
+}
+.cta-title { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 8px; letter-spacing: -0.3px; }
+.cta-desc { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
 
 @media (max-width: 640px) {
-    .hero { padding: 28px 16px 36px; }
-    .hero-inner { flex-direction: column; align-items: center; text-align: center; gap: 16px; }
-    .hero-logo { width: 100px; height: 100px; }
-    .hero-title { font-size: 22px; }
-    .hero-desc { font-size: 13px; }
-    .hero-actions { flex-direction: column; width: 100%; gap: 8px; }
-    .btn-hero { width: 100%; text-align: center; padding: 12px 20px; }
+    .hero-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .hero-emblem { display: none; }
+    .hero-title { font-size: 24px; }
+    .hero-actions { flex-direction: column; width: 100%; }
+    .btn-hero { width: 100%; text-align: center; padding: 13px; }
     .jobs-grid { grid-template-columns: 1fr; }
-    .cta { margin: 0 0 32px; padding: 24px 16px; }
+    .cta { padding: 24px 16px; }
+    .cta-title { font-size: 18px; }
 }
 @media (min-width: 640px) {
-    .hero-title { font-size: 36px; }
+    .hero-title { font-size: 38px; }
     .categories-grid { grid-template-columns: repeat(4, 1fr); }
-    .stat-number { font-size: 32px; }
-    .stat-label { font-size: 12px; }
-    .cta { margin: 0 0 48px; padding: 48px; }
-    .cta-title { font-size: 26px; }
+    .stat-number { font-size: 34px; }
 }
 @media (min-width: 1024px) {
-    .hero { padding: 64px 24px 72px; }
-    .hero-title { font-size: 44px; }
+    .hero { padding: 72px 24px 80px; }
+    .hero-title { font-size: 48px; }
     .section { padding: 48px 24px; }
+    .hero-emblem { width: 200px; height: 200px; }
 }
 </style>
 {% endblock %}
@@ -107,20 +132,24 @@
 {% block content %}
 <section class="hero">
     <div class="hero-inner">
-        <img src="{% static 'images/logo.png' %}" alt="Жаштар Борбору" class="hero-logo">
         <div>
-            <div class="hero-label">🇰🇬 {% if is_ky %}Расмий портал{% else %}Официальный портал{% endif %}</div>
+            <div class="hero-badge-wrap">
+                <span class="hero-badge">🇰🇬 {% if is_ky %}Расмий портал{% else %}Официальный портал{% endif %}</span>
+            </div>
             {% if is_ky %}
                 <h1 class="hero-title">Кыргызстанда <span>кыялыңыздагы</span> жумушту табыңыз</h1>
-                <p class="hero-desc">Жаштар үчүн мамлекеттик жумуш порталы. Ишенимдүү иш берүүчүлөрдөн актуалдуу сунуштар.</p>
+                <p class="hero-desc">Жаштар үчүн жумуш порталы. Ишенимдүү иш берүүчүлөрдөн актуалдуу сунуштар.</p>
             {% else %}
                 <h1 class="hero-title">Найди работу своей <span>мечты</span> в Кыргызстане</h1>
-                <p class="hero-desc">Государственный портал вакансий для молодёжи. Актуальные предложения от проверенных работодателей.</p>
+                <p class="hero-desc">Портал вакансий для молодёжи. Актуальные предложения от проверенных работодателей.</p>
             {% endif %}
             <div class="hero-actions">
                 <a href="{% url 'core:job_list' %}" class="btn-hero btn-hero-primary">{% if is_ky %}Жумуштар{% else %}Вакансии{% endif %}</a>
                 <a href="{% url 'core:job_list' %}?experience=none" class="btn-hero btn-hero-secondary">{% if is_ky %}Тажрыйбасыз{% else %}Без опыта{% endif %} →</a>
             </div>
+        </div>
+        <div class="hero-emblem">
+            <img src="{% static 'images/logo.png' %}" alt="Nexbit">
         </div>
     </div>
 </section>
@@ -155,7 +184,7 @@
             <div class="job-company">{{ job.company }}</div>
             <div class="job-title">{{ job.title }}</div>
             <div class="job-meta">
-                <span class="badge badge-blue">{{ job.get_employment_type_display }}</span>
+                <span class="badge badge-red">{{ job.get_employment_type_display }}</span>
                 <span class="badge badge-gray">{{ job.location }}</span>
             </div>
             <div class="job-salary">{{ job.get_salary_display }}</div>
@@ -176,7 +205,7 @@
             <div class="job-company">{{ job.company }}</div>
             <div class="job-title">{{ job.title }}</div>
             <div class="job-meta">
-                <span class="badge badge-blue">{{ job.get_employment_type_display }}</span>
+                <span class="badge badge-red">{{ job.get_employment_type_display }}</span>
                 <span class="badge badge-gray">{{ job.location }}</span>
             </div>
             <div class="job-salary">{{ job.get_salary_display }}</div>
@@ -188,7 +217,7 @@
 </div>
 
 {% if categories %}
-<div style="background:var(--white);padding:32px 0;">
+<div style="background:var(--dark2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:32px 0;">
     <div class="section" style="padding-top:0;padding-bottom:0;">
         <div class="section-header">
             <div class="section-title">{% if is_ky %}Категориялар{% else %}Категории{% endif %}</div>
@@ -205,7 +234,7 @@
 </div>
 {% endif %}
 
-<div class="section">
+<div class="cta-wrap">
     <div class="cta">
         <div class="cta-title">{% if is_ky %}Карьераңды баштоого даярсыңбы?{% else %}Готов начать карьеру?{% endif %}</div>
         <p class="cta-desc">{% if is_ky %}Азыр эле ылайыктуу жумуш тап{% else %}Найди подходящую вакансию прямо сейчас{% endif %}</p>

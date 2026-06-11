@@ -131,3 +131,64 @@ class JobApplication(models.Model):
 
     def __str__(self):
         return f'{self.applicant.username} -> {self.job.title}'
+
+
+class Payment(models.Model):
+    TYPE_CHOICES = [
+        ('publish', 'Публикация вакансии'),
+        ('top', 'Поднять в топ'),
+    ]
+    STATUS_CHOICES = [
+        ('pending', 'Ожидает проверки'),
+        ('approved', 'Подтверждена'),
+        ('rejected', 'Отклонена'),
+    ]
+    BANK_CHOICES = [
+        ('mbank', 'M-Bank'),
+        ('obank', 'O!Bank'),
+        ('optima', 'Optima Bank'),
+        ('bakai', 'Бакай Банк'),
+        ('demir', 'Демир Банк'),
+        ('kompanion', 'Компаньон Банк'),
+        ('aiyl', 'Айыл Банк'),
+        ('kicb', 'KICB'),
+        ('rsk', 'РСК Банк'),
+        ('dos', 'Дос-Кредобанк'),
+        ('elqr', 'ELQR'),
+        ('other', 'Другой'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments')
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='payments', null=True, blank=True)
+    payment_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    amount = models.PositiveIntegerField()
+    check_image = models.ImageField(upload_to='payment_checks/', blank=True, null=True, verbose_name='Чек')
+    sender_phone = models.CharField(max_length=30, blank=True, verbose_name='Телефон отправителя')
+    sender_name = models.CharField(max_length=100, blank=True, verbose_name='Имя отправителя')
+    sender_bank = models.CharField(max_length=50, choices=BANK_CHOICES, blank=True, verbose_name='Банк')
+    comment = models.CharField(max_length=500, blank=True, verbose_name='Комментарий')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Оплата'
+        verbose_name_plural = 'Оплаты'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.user.username} — {self.get_payment_type_display()} — {self.status}'
+
+
+class SupportTicket(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='tickets')
+    name = models.CharField(max_length=100, verbose_name='Имя')
+    email = models.EmailField(verbose_name='Email')
+    message = models.TextField(verbose_name='Сообщение')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Обращение в поддержку'
+        verbose_name_plural = 'Обращения в поддержку'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.name} — {self.created_at.strftime("%d.%m.%Y")}'

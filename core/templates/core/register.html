@@ -1,28 +1,28 @@
 {% extends 'core/base.html' %}
-{% block title %}{% if is_ky %}Катталуу — Жаштар Борбору{% else %}Регистрация — Жаштар Борбору{% endif %}{% endblock %}
+{% block title %}{% if is_ky %}Катталуу — Nexbit{% else %}Регистрация — Nexbit{% endif %}{% endblock %}
 {% block extra_style %}
 <style>
 .auth-page { min-height: calc(100vh - 54px); display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
-.auth-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 28px 24px; width: 100%; max-width: 480px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-.auth-title { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 4px; text-align: center; }
+.auth-card { background: var(--dark2); border: 1px solid var(--border); border-radius: 12px; padding: 28px 24px; width: 100%; max-width: 480px; }
+.auth-title { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 4px; text-align: center; letter-spacing: -0.3px; }
 .auth-sub { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 20px; }
 .role-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
-.role-option { border: 2px solid var(--border); border-radius: 9px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s; }
-.role-option:has(input:checked) { border-color: var(--blue); background: #EFF6FF; }
+.role-option { border: 2px solid var(--border); border-radius: 9px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg); }
+.role-option:has(input:checked) { border-color: var(--red); background: rgba(212,43,43,0.08); }
 .role-option input { display: none; }
 .role-icon { font-size: 22px; margin-bottom: 4px; }
-.role-label { font-size: 13px; font-weight: 600; color: var(--navy); }
+.role-label { font-size: 13px; font-weight: 600; color: #E8EAF0; }
 .role-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
 .form-group { margin-bottom: 13px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.form-label { display: block; font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 5px; }
-.form-input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 14px; font-family: 'Segoe UI', sans-serif; color: #1E293B; background: var(--bg); outline: none; box-sizing: border-box; }
-.form-input:focus { border-color: var(--blue); background: var(--white); }
-.form-error { font-size: 11px; color: #DC2626; margin-top: 3px; }
-.submit-btn { width: 100%; padding: 12px; background: var(--blue); color: var(--white); border: none; border-radius: 7px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 4px; font-family: 'Segoe UI', sans-serif; }
-.submit-btn:hover { background: #1d44c0; }
+.form-label { display: block; font-size: 12px; font-weight: 600; color: #C8CDD8; margin-bottom: 5px; }
+.form-input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 14px; font-family: inherit; color: var(--text); background: var(--bg); outline: none; box-sizing: border-box; }
+.form-input:focus { border-color: var(--red); }
+.form-error { font-size: 11px; color: #F87171; margin-top: 3px; }
+.submit-btn { width: 100%; padding: 12px; background: var(--red); color: #fff; border: none; border-radius: 7px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 4px; font-family: inherit; }
+.submit-btn:hover { background: var(--red-dark); }
 .auth-footer { text-align: center; margin-top: 16px; font-size: 13px; color: var(--muted); }
-.auth-footer a { color: var(--blue); font-weight: 600; }
+.auth-footer a { color: var(--red); font-weight: 600; }
 @media (max-width: 400px) { .form-row { grid-template-columns: 1fr; } }
 </style>
 {% endblock %}
@@ -31,7 +31,7 @@
 <div class="auth-page">
     <div class="auth-card">
         <div class="auth-title">{% if is_ky %}Аккаунт түзүү{% else %}Создать аккаунт{% endif %}</div>
-        <div class="auth-sub">{% if is_ky %}Кыргызстандын жаштары үчүн жумуш порталы{% else %}Портал вакансий для молодёжи Кыргызстана{% endif %}</div>
+        <div class="auth-sub">Nexbit — {% if is_ky %}Кыргызстандын жумуш порталы{% else %}портал вакансий Кыргызстана{% endif %}</div>
         <form method="POST">
             {% csrf_token %}
             <div class="role-row">
@@ -48,7 +48,6 @@
                     <div class="role-desc">{% if is_ky %}Жумуш жарыялайм{% else %}Размещаю вакансии{% endif %}</div>
                 </label>
             </div>
-
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">{% if is_ky %}Аты{% else %}Имя{% endif %}</label>
@@ -61,36 +60,31 @@
                     {% if form.last_name.errors %}<div class="form-error">{{ form.last_name.errors.0 }}</div>{% endif %}
                 </div>
             </div>
-
             <div class="form-group">
                 <label class="form-label">{% if is_ky %}Колдонуучу аты{% else %}Имя пользователя{% endif %}</label>
                 <input type="text" name="username" class="form-input" placeholder="aibek_uulu" value="{{ form.username.value|default:'' }}">
                 {% if form.username.errors %}<div class="form-error">{{ form.username.errors.0 }}</div>{% endif %}
             </div>
-
             <div class="form-group">
                 <label class="form-label">Email</label>
                 <input type="email" name="email" class="form-input" placeholder="email@example.com" value="{{ form.email.value|default:'' }}">
                 {% if form.email.errors %}<div class="form-error">{{ form.email.errors.0 }}</div>{% endif %}
             </div>
-
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">{% if is_ky %}Сырсөз{% else %}Пароль{% endif %}</label>
-                    <input type="password" name="password1" class="form-input" placeholder="{% if is_ky %}Кем дегенде 8 символ{% else %}Мин. 8 символов{% endif %}">
+                    <input type="password" name="password1" class="form-input" placeholder="{% if is_ky %}8+ символ{% else %}Мин. 8 символов{% endif %}">
                     {% if form.password1.errors %}<div class="form-error">{{ form.password1.errors.0 }}</div>{% endif %}
                 </div>
                 <div class="form-group">
-                    <label class="form-label">{% if is_ky %}Сырсөздү кайталаңыз{% else %}Повторите пароль{% endif %}</label>
+                    <label class="form-label">{% if is_ky %}Кайталоо{% else %}Повторите{% endif %}</label>
                     <input type="password" name="password2" class="form-input" placeholder="{% if is_ky %}Кайталаңыз{% else %}Повторите{% endif %}">
                     {% if form.password2.errors %}<div class="form-error">{{ form.password2.errors.0 }}</div>{% endif %}
                 </div>
             </div>
-
             {% if form.non_field_errors %}
             <div class="form-error" style="margin-bottom:10px;">{{ form.non_field_errors.0 }}</div>
             {% endif %}
-
             <button type="submit" class="submit-btn">{% if is_ky %}Катталуу{% else %}Зарегистрироваться{% endif %}</button>
         </form>
         <div class="auth-footer">
