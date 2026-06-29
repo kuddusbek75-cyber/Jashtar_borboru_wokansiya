@@ -13,6 +13,15 @@ _bot_started = False
 _bot_lock = threading.Lock()
 
 
+def esc(text):
+    """Экранирует спецсимволы Markdown для Telegram."""
+    if not text:
+        return ''
+    for ch in ['*', '_', '`', '[']:
+        text = str(text).replace(ch, f'\\{ch}')
+    return text
+
+
 def send_message(chat_id, text, keyboard=None):
     data = {'chat_id': chat_id, 'text': text, 'parse_mode': 'Markdown'}
     if keyboard:
@@ -38,17 +47,18 @@ def answer_callback(callback_id, text):
 
 def send_telegram(job):
     """Отправляет новую вакансию админу на проверку."""
-    author = job.author.username if job.author else 'Не указан'
-    email = job.author.email if job.author else 'Не указан'
+    author = esc(job.author.username) if job.author else 'Не указан'
+    email = esc(job.author.email) if job.author else 'Не указан'
+    phone = esc(job.contact_phone) if job.contact_phone else 'не указан'
     text = (
-        f"🆕 *Новая вакансия на проверку!*\n\n"
-        f"📌 *{job.title}*\n"
-        f"🏢 {job.company} · 📍 {job.location}\n"
-        f"💰 {job.get_salary_display()}\n"
-        f"👤 Автор: {author}\n"
-        f"📧 {email}\n"
-        f"📞 {job.contact_phone or 'не указан'}\n"
-        f"🆔 ID: `{job.pk}`"
+        f"\U0001f195 *Новая вакансия на проверку!*\n\n"
+        f"\U0001f4cc *{esc(job.title)}*\n"
+        f"\U0001f3e2 {esc(job.company)} \u00b7 \U0001f4cd {esc(job.location)}\n"
+        f"\U0001f4b0 {esc(job.get_salary_display())}\n"
+        f"\U0001f464 Автор: {author}\n"
+        f"\U0001f4e7 {email}\n"
+        f"\U0001f4de {phone}\n"
+        f"\U0001f194 ID: {job.pk}"
     )
     keyboard = {
         'inline_keyboard': [[
@@ -61,13 +71,16 @@ def send_telegram(job):
 
 def send_support_notify(ticket):
     """Отправляет обращение в поддержку админу."""
-    user_info = f'👤 {ticket.name}\n📧 {ticket.email}'
+    name = esc(ticket.name)
+    email = esc(ticket.email)
+    message = esc(ticket.message[:800])
+    user_info = f'\U0001f464 {name}\n\U0001f4e7 {email}'
     if ticket.user:
-        user_info += f'\n🔗 Аккаунт: {ticket.user.username}'
+        user_info += f'\n\U0001f517 Аккаунт: {esc(ticket.user.username)}'
     text = (
-        f"🛟 *Новое обращение в поддержку!*\n\n"
+        f"\U0001f9df *Новое обращение в поддержку!*\n\n"
         f"{user_info}\n\n"
-        f"💬 *Сообщение:*\n{ticket.message[:800]}"
+        f"\U0001f4ac *Сообщение:*\n{message}"
     )
     send_message(ADMIN_CHAT_ID, text)
 
@@ -89,7 +102,7 @@ def process_action(action, job_id, callback_id, chat_id):
             job.is_active = True
             job.save()
             answer_callback(callback_id, '✅ Одобрено!')
-            send_message(chat_id, f'✅ Вакансия *"{job.title}"* одобрена и опубликована!')
+            send_message(chat_id, f'✅ Вакансия "{esc(job.title)}" одобрена и опубликована!')
             if job.author and job.author.email:
                 send_mail(
                     subject='Ваша вакансия одобрена — Nexbit',
@@ -108,7 +121,7 @@ def process_action(action, job_id, callback_id, chat_id):
             job.is_active = False
             job.save()
             answer_callback(callback_id, '❌ Отклонено!')
-            send_message(chat_id, f'❌ Вакансия *"{job.title}"* отклонена.')
+            send_message(chat_id, f'❌ Вакансия "{esc(job.title)}" отклонена.')
             if job.author and job.author.email:
                 send_mail(
                     subject='Ваша вакансия отклонена — Nexbit',
